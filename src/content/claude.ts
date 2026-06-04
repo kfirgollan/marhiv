@@ -1,15 +1,14 @@
-// Marhiv content script — Claude (https://claude.ai/new)
+// Marhiv content-script host — Claude (https://claude.ai).
 //
-// v0.0.1: mounts Marhiv's draggable corner indicator. This is the entry point
-// for the Claude integration; the indicator itself is a shared, cross-tool UI
-// piece (see src/ui/indicator.ts).
+// Thin entry point. It starts two cross-site subsystems for this page:
+//   - the router, which drives per-route behavior as the SPA navigates
+//     (per-page behavior lives in src/sites/claude.ts, not here);
+//   - the Plugin Manager, which activates enabled plugins whose `matches` fit
+//     the current URL (src/plugins/manager.ts).
 
-import { mountIndicator } from '../ui/indicator'
+import { startRouter } from '../routing/router'
+import { claudeSite } from '../sites/claude'
+import { PluginManager } from '../plugins/manager'
 
-// `run_at: document_idle` usually fires after `load`, so the page is often
-// already complete by the time we run — but guard for the early case too.
-if (document.readyState === 'complete') {
-  void mountIndicator()
-} else {
-  window.addEventListener('load', () => void mountIndicator(), { once: true })
-}
+startRouter(claudeSite)
+void new PluginManager().init()

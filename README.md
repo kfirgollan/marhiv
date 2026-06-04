@@ -54,7 +54,7 @@ After `npm run build` (or `npm run dev`), load the unpacked extension:
 
 ### What v0.0.1 does
 
-A single content script targets `https://claude.ai/new`. When that page finishes loading, it logs `Hello from Marhiv!` to the page's DevTools console — a minimal proof that Marhiv's injection pipeline works end to end. Open DevTools (F12) on that page to see it.
+A single content script targets `https://claude.ai/new`. When that page loads, Marhiv mounts a draggable **Menu Ball** (the logo disc) in the corner — drag it by the handle that appears on hover; its position is remembered across pages. Click it to open the **settings Panel**, a small resizable window that anchors over the ball and opens into whichever corner of the screen has room. The Panel has a left menu (General, About) and a content area; the controls are placeholders for now — the configuration system they'll drive comes later.
 
 ### Linting & formatting
 

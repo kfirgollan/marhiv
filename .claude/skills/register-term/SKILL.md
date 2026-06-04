@@ -1,5 +1,5 @@
 ---
-description: "Register or update a term in the Marhiv taxonomy (docs/taxonomy.md). Use when the user wants to define project vocabulary so Claude and contributors share precise meaning for a component or concept."
+description: 'Register or update a term in the Marhiv taxonomy (docs/taxonomy.md). Use when the user wants to define project vocabulary so Claude and contributors share precise meaning for a component or concept.'
 ---
 
 # Register Term

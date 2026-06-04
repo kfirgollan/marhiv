@@ -1,0 +1,260 @@
+/*
+ * Settings Panel styles. Injected into the Panel's shadow root, so selectors
+ * are fully isolated from the host AI site (and vice-versa). Brand tokens are
+ * redeclared locally here since assets/brand/tokens.css isn't loaded inside the
+ * shadow tree. See assets/brand/BRAND.md.
+ */
+:host {
+  --marhiv-canvas: #160a2e;
+  --marhiv-surface: #2a1052;
+  --marhiv-peak-shadow: #371765;
+  --marhiv-primary: #7a2bb4;
+  --marhiv-accent: #c42c9e;
+  --marhiv-snow: #f8faff;
+  --marhiv-text-muted: #c9b8e8;
+  --marhiv-hairline: rgba(233, 225, 247, 0.14);
+  all: initial;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.marhiv-panel {
+  position: fixed;
+  z-index: 2147483646;
+  display: flex;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--marhiv-hairline);
+  background: var(--marhiv-canvas);
+  color: var(--marhiv-snow);
+  font:
+    13px/1.45 system-ui,
+    -apple-system,
+    sans-serif;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
+/* Left rail / menu — collapses to icons-only via the --collapsed modifier. */
+.marhiv-panel__nav {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 124px;
+  padding: 8px;
+  background: var(--marhiv-surface);
+  border-right: 1px solid var(--marhiv-hairline);
+  transition: width 120ms ease;
+}
+
+.marhiv-panel__nav--collapsed {
+  width: 48px;
+  padding: 8px 6px;
+}
+
+/* Collapse/expand toggle — sits above the menu items. */
+.marhiv-menu-toggle {
+  align-self: stretch;
+  margin-bottom: 4px;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--marhiv-text-muted);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1;
+  text-align: right;
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    color 120ms ease;
+}
+
+.marhiv-panel__nav--collapsed .marhiv-menu-toggle {
+  text-align: center;
+}
+
+.marhiv-menu-toggle:hover {
+  background: var(--marhiv-peak-shadow);
+  color: var(--marhiv-snow);
+}
+
+.marhiv-menuitem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--marhiv-text-muted);
+  font: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 120ms ease,
+    color 120ms ease;
+}
+
+.marhiv-menuitem--collapsed {
+  justify-content: center;
+  padding: 8px;
+}
+
+.marhiv-menuitem:hover {
+  background: var(--marhiv-peak-shadow);
+  color: var(--marhiv-snow);
+}
+
+.marhiv-menuitem--active {
+  background: var(--marhiv-primary);
+  color: var(--marhiv-snow);
+}
+
+.marhiv-menuitem__icon {
+  flex: 0 0 auto;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.marhiv-menuitem__label {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Content side — frames the active Panel Page. */
+.marhiv-panel__content {
+  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Close control — Panel chrome, floated over the page's header corner. */
+.marhiv-close {
+  position: absolute;
+  top: 7px;
+  right: 8px;
+  z-index: 1;
+  border: 0;
+  background: transparent;
+  color: var(--marhiv-text-muted);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+
+.marhiv-close:hover {
+  background: var(--marhiv-peak-shadow);
+  color: var(--marhiv-snow);
+}
+
+/* Panel Page — a title header above a scrollable body. */
+.marhiv-page {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.marhiv-page__header {
+  /* Right padding clears the floating close control. */
+  padding: 10px 36px 10px 12px;
+  border-bottom: 1px solid var(--marhiv-hairline);
+}
+
+.marhiv-page__title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.marhiv-page__body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.marhiv-page__lead {
+  margin: 0;
+  color: var(--marhiv-text-muted);
+}
+
+.marhiv-page__meta {
+  margin: 0;
+  color: var(--marhiv-text-muted);
+  font-size: 11px;
+}
+
+.marhiv-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.marhiv-field__label {
+  min-width: 0;
+}
+
+.marhiv-field select {
+  font: inherit;
+  color: var(--marhiv-snow);
+  background: var(--marhiv-surface);
+  border: 1px solid var(--marhiv-hairline);
+  border-radius: 6px;
+  padding: 3px 6px;
+}
+
+/* Read-only value display, e.g. the Dev page's live readouts. */
+.marhiv-readout {
+  min-width: 0;
+  overflow: hidden;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  color: var(--marhiv-snow);
+  background: var(--marhiv-surface);
+  border: 1px solid var(--marhiv-hairline);
+  border-radius: 6px;
+  padding: 2px 6px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Resize grip — one per corner; only the open-direction one is rendered. */
+.marhiv-grip {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  touch-action: none;
+}
+
+.marhiv-grip--tl {
+  top: 0;
+  left: 0;
+}
+.marhiv-grip--tr {
+  top: 0;
+  right: 0;
+}
+.marhiv-grip--bl {
+  bottom: 0;
+  left: 0;
+}
+.marhiv-grip--br {
+  bottom: 0;
+  right: 0;
+}

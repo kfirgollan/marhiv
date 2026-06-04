@@ -34,19 +34,91 @@ primary entry point for interacting with Marhiv.
 On hover it reveals a handle bar. As the main interaction surface, it is where
 user-facing enhancement controls are surfaced.
 
+### Panel Menu Item
+
+One entry in the **Settings Panel**'s left menu, linking a menu item to a
+**Panel Page**; selecting it activates that page.
+
+It has two states — collapsed (icon only, label as a tooltip) and expanded (icon
+and label) — chosen by the parent Panel, which owns whether the whole menu is
+collapsed (expanded by default, persisted). Implemented as the `PanelMenuItem`
+React component (`src/ui/panel/PanelMenuItem.tsx`); the Panel renders one per
+registered page.
+
+_See also: [Settings Panel](#settings-panel), [Panel Page](#panel-page), [Menu Ball](#menu-ball)._
+
+### Panel Page
+
+The base construct the **Settings Panel** renders: a title plus a body, with one
+page shown at a time.
+
+The Panel frames the page (left menu, close control, resize) and each left-rail
+menu item links to exactly one Panel Page — selecting the item makes that page
+appear. Implemented as the `PanelPage` React component (`src/ui/panel/PanelPage.tsx`);
+concrete pages compose it and are registered in `src/ui/panel/pages.tsx`. This is
+where configuration forms — and eventually **Plugin** and **Enhancement API**
+settings — live. Synonyms: _Marhiv Page_; `PanelPage` (the React component).
+
+_See also: [Settings Panel](#settings-panel), [Menu Ball](#menu-ball), [Enhancement API](#enhancement-api)._
+
 ### Plugin
 
 A curated, first-party enhancement that lives in this repo and is published to
 the **Registry**. Each Plugin declares the AI sites it targets and the behavior
 it adds. The "Oh My Zsh" half of the model: vetted, installable, configurable.
 
-_See also: [Userscript](#userscript), [Registry](#registry), [Enhancement API](#enhancement-api)._
+A Plugin is `{ meta, onLoad, onUnload? }`: `meta` declares its id, name, target
+`matches`, and default enabled state; `onLoad`/`onUnload` are the lifecycle hooks
+the **Plugin Manager** calls, both receiving a **Plugin Context**. Built-in
+Plugins are registered in `src/plugins/registry.ts`; the first is `marhiv-theme`.
+
+_See also: [Plugin Manager](#plugin-manager), [Plugin Context](#plugin-context), [Userscript](#userscript), [Registry](#registry), [Enhancement API](#enhancement-api)._
+
+### Plugin Context
+
+The capabilities Marhiv lends a **Plugin** for the duration of its active life,
+passed to `onLoad`/`onUnload` — the first, smallest slice of the **Enhancement API**.
+
+Page mutations made through the context are tracked so the **Plugin Manager** can
+reverse them on unload, which is why a well-behaved Plugin often needs no
+`onUnload`. It starts with a single capability, `injectCss` (inject a stylesheet
+into the host page), and grows as Plugins need more. Lives at `src/plugins/context.ts`.
+
+_See also: [Plugin](#plugin), [Plugin Manager](#plugin-manager), [Enhancement API](#enhancement-api)._
+
+### Plugin Manager
+
+The content-script subsystem that owns **Plugin** lifecycle on a page: it reads
+persisted enable/disable state, activates Plugins that are enabled and whose
+`matches` fit the current URL by calling their `onLoad`, and unloads them
+(`onUnload` plus **Plugin Context** disposal) when disabled or when the URL stops
+matching.
+
+It reacts live to storage changes (a toggle in this tab or another) and to SPA
+navigation, reconciling the active set each time. Runs alongside the per-site
+Router; no background worker is involved. Lives at `src/plugins/manager.ts`.
+
+_See also: [Plugin](#plugin), [Plugin Context](#plugin-context), [Enhancement API](#enhancement-api)._
 
 ### Registry
 
 The format and tooling for publishing and installing community **Plugins**.
 
 _See also: [Plugin](#plugin)._
+
+### Settings Panel
+
+The resizable settings window that opens when the user clicks the **Menu Ball**;
+it holds Marhiv's user-facing configuration.
+
+Anchors over the ball and covers it (the ball hides while the Panel is open),
+opening into the corner of the viewport with the most room. Built in React
+inside a shadow root so its styles stay isolated from the host AI site.
+Internally it has a left rail of sections and a switchable content page where
+configuration forms live — the surface where **Plugin** and **Enhancement API**
+settings will appear as they land. Synonym: _Panel_.
+
+_See also: [Menu Ball](#menu-ball), [Plugin](#plugin), [Enhancement API](#enhancement-api)._
 
 ### Userscript
 

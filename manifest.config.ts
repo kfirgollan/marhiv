@@ -30,7 +30,21 @@ export default defineManifest({
   permissions: ['storage'],
   content_scripts: [
     {
-      matches: ['https://claude.ai/new'],
+      // Navigation bridge: runs in the page's own (MAIN) world so it can patch
+      // the host SPA's History API and re-broadcast client-side navigations to
+      // Marhiv's isolated content script. Injected at document_start so the
+      // patch is in place before the app performs its first navigation.
+      matches: ['https://claude.ai/*'],
+      js: ['src/content/navigation-bridge.ts'],
+      world: 'MAIN',
+      run_at: 'document_start',
+    },
+    {
+      // Marhiv's isolated-world host: runs the per-site Router, which matches
+      // the URL against the site's routes and drives their enter/leave
+      // lifecycle as the SPA navigates. Loaded site-wide (not just /new) so the
+      // Router can react to every in-app navigation.
+      matches: ['https://claude.ai/*'],
       js: ['src/content/claude.ts'],
       run_at: 'document_idle',
     },

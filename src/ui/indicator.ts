@@ -7,6 +7,7 @@
 // independent of the host page's stylesheets.
 
 import { loadPosition, savePosition, onPositionChange, type Position } from '../storage/position'
+import { mountPanel } from './panel/mount'
 // The simplified icon variant — a circular disc with transparent corners that
 // stays legible at small sizes (BRAND.md: use the icon below 64px). A 128px
 // source keeps it crisp on high-DPI screens when shown at 32px.
@@ -89,10 +90,11 @@ function createHandle(): HTMLDivElement {
   return handle
 }
 
-export async function mountIndicator(): Promise<void> {
+export async function mountIndicator(signal?: AbortSignal): Promise<void> {
   // Content scripts can run more than once across a page's lifetime; never
   // mount a second indicator.
   if (document.getElementById(CONTAINER_ID)) return
+  if (signal?.aborted) return
 
   const container = document.createElement('div')
   container.id = CONTAINER_ID
@@ -109,6 +111,23 @@ export async function mountIndicator(): Promise<void> {
   document.body.appendChild(container)
 
   applyPosition(container, clampToViewport((await loadPosition()) ?? defaultPosition()))
+  // The route may have left while the position was loading; if so, undo the
+  // mount rather than leaving an orphaned indicator behind.
+  if (signal?.aborted) {
+    container.remove()
+    return
+  }
+
+  // Clicking the ball opens the settings Panel, which covers the ball; hide the
+  // ball while it's open so the Panel reads as a single surface, and restore it
+  // when the Panel closes.
+  const panel = mountPanel({
+    onOpenChange: (open) => {
+      container.style.display = open ? 'none' : ''
+    },
+  })
+  logo.style.cursor = 'pointer'
+  logo.addEventListener('click', () => panel.open())
 
   let dragging = false
 
@@ -121,10 +140,14 @@ export async function mountIndicator(): Promise<void> {
     handle.style.pointerEvents = 'none'
   }
 
-  container.addEventListener('mouseenter', showHandle)
-  container.addEventListener('mouseleave', () => {
-    if (!dragging) hideHandle()
-  })
+  container.addEventListener('mouseenter', showHandle, { signal })
+  container.addEventListener(
+    'mouseleave',
+    () => {
+      if (!dragging) hideHandle()
+    },
+    { signal },
+  )
 
   handle.addEventListener('pointerdown', (event: PointerEvent) => {
     event.preventDefault()
@@ -164,7 +187,21 @@ export async function mountIndicator(): Promise<void> {
 
   // Keep this page's indicator in sync when another tab moves it. Ignore
   // updates mid-drag so we don't fight the user's pointer.
-  onPositionChange((position) => {
-    if (!dragging) applyPosition(container, clampToViewport(position))
+  const unsubscribe = onPositionChange((next) => {
+    if (!dragging) applyPosition(container, clampToViewport(next))
   })
+
+  // When the route leaves (the user navigates away from this page), tear the
+  // indicator down: stop listening for cross-tab updates and remove the node.
+  // The element-scoped listeners above are bound to `signal` and clean up on
+  // their own. (The settings Panel is a separate, hidden surface and is left
+  // as-is until it exposes a teardown handle.)
+  signal?.addEventListener(
+    'abort',
+    () => {
+      unsubscribe()
+      container.remove()
+    },
+    { once: true },
+  )
 }

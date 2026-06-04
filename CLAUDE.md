@@ -23,7 +23,7 @@ Keep both in mind when making architectural decisions — anything plugins can d
 
 ## Current status
 
-**Pre-alpha — v0.0.1.** The build toolchain is in place and produces a loadable MV3 extension. The only behavior so far is a single content script on `https://claude.ai/new` that logs `Hello from Marhiv!` once the page loads (`src/content/claude.ts`) — a seed proving the injection pipeline works end to end. No background worker, extension UI, plugin system, or tests exist yet. Update this file as those land; don't describe code that doesn't exist as if it does.
+**Pre-alpha — v0.0.1.** The build toolchain is in place and produces a loadable MV3 extension. A content script on `https://claude.ai/*` (`src/content/claude.ts`) starts two subsystems: a per-site **Router** (`src/routing/`, driven by the site definition in `src/sites/claude.ts`) that mounts route behavior as the SPA navigates, and the **Plugin Manager** (`src/plugins/manager.ts`). The router mounts the on-page UI: the **Menu Ball** (`src/ui/indicator.ts`) — a draggable logo disc whose position persists across pages — and, on click, the **settings Panel** (`src/ui/panel/`), a React UI rendered in a shadow root that anchors over the ball and is resizable. The Panel renders one **Panel Page** at a time (a title + body construct); a left-rail menu links each item to a page. The **Plugins** page is wired to real behavior (enable/disable toggles persisted to storage, applied live); the General/About pages are still **scaffolding**. A first plugin system exists: Plugins implement `onLoad`/`onUnload` and receive a **Plugin Context** (the first slice of the Enhancement API — currently just `injectCss`); the one built-in plugin, `marhiv-theme`, recolors the host page to Marhiv branding. No background worker or tests exist yet. Update this file as those land; don't describe code that doesn't exist as if it does.
 
 ## Tech stack
 
@@ -32,7 +32,7 @@ The chosen stack. Honor it unless the user redirects:
 - **Language:** TypeScript (strict). See `tsconfig.json`.
 - **Extension platform:** Chromium **Manifest V3** (service worker background, content scripts).
 - **Bundler:** **Vite 8** with **CRXJS** (`@crxjs/vite-plugin` ^2.4) for MV3 builds + HMR.
-- **UI:** **React** for the popup and options/settings pages _(not added yet — introduce when the first UI surface appears)_.
+- **UI:** **React** for extension UI. The first surface is the settings Panel (`src/ui/panel/`), rendered into a **shadow root** for CSS isolation from host AI sites. JSX uses the automatic runtime (`"jsx": "react-jsx"` in `tsconfig.json`); Vite/esbuild handles the transform — no separate React Vite plugin. Stylesheets for shadow-mounted UI are imported with `?inline` and injected into the shadow root (Vite's default would append them to the host page's `<head>`).
 - **Output:** a loadable unpacked extension in `dist/`.
 
 ## Build & layout
@@ -40,8 +40,11 @@ The chosen stack. Honor it unless the user redirects:
 - `npm run dev` — watch build with HMR. `npm run build` — production build to `dist/`.
 - `manifest.config.ts` — the MV3 manifest via CRXJS `defineManifest`, version sourced from `package.json`. **Add new content scripts / permissions here.**
 - `vite.config.ts` — wires the CRXJS plugin.
-- `src/content/<tool>.ts` — one content script per AI tool. Each is declared in `manifest.config.ts` with its `matches` URL pattern.
-- No test runner is configured yet; add one (e.g. Vitest) when there's logic worth testing.
+- `src/content/<tool>.ts` — one content script per AI tool. Each is declared in `manifest.config.ts` with its `matches` URL pattern. The entry is thin: it mounts shared UI, which lives under `src/ui/`.
+- `src/ui/` — shared, cross-tool on-page UI. `indicator.ts` is the **Menu Ball**; `panel/` is the **settings Panel** (`mount.tsx` shadow-root + React root, `Panel.tsx` the frame, `geometry.ts` pure anchor/resize math, `PanelPage.tsx` the base **Panel Page** construct + form helpers, `PanelMenuItem.tsx` a **Panel Menu Item** (collapsible left-menu entry), `pages.tsx` the page registry that maps menu items to pages, `panel.css` shadow-scoped styles). Add a settings page by composing `<PanelPage>` and registering it in `pages.tsx`.
+- `src/plugins/` — the plugin system. `types.ts` defines the `Plugin` contract and `PluginContext` (the Enhancement API seed); `context.ts` builds a context and tracks its page mutations for clean teardown; `manager.ts` is the **Plugin Manager** (lifecycle + storage/navigation reactivity); `registry.ts` lists the built-in plugins; `builtin/<id>/` holds each plugin (e.g. `marhiv-theme`). Add a built-in plugin by creating `builtin/<id>/index.ts` and appending it to the registry.
+- `src/storage/` — typed `chrome.storage.local` wrappers. `persisted.ts` is a generic load/save/subscribe factory; `position.ts` (Menu Ball position), `panel.ts` (Panel size + last section), and `plugins.ts` (plugin enable/disable states) are built on it. Add new persisted values via the factory rather than re-implementing the plumbing (the duplication gate enforces this).
+- No test runner is configured yet; add one (e.g. Vitest) when there's logic worth testing. `geometry.ts` is pure and the obvious first candidate.
 
 ### Quality gates
 

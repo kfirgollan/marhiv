@@ -1,0 +1,47 @@
+/*
+ * marhiv-theme — accent + surfaces restyle of the host AI site (claude.ai).
+ *
+ * Strategy: recolor by OVERRIDING the host's design-token custom properties,
+ * not by targeting its class names. Claude.ai exposes its palette as `--accent-*`
+ * / `--bg-*` / `--text-*` custom properties on :root; reassigning them to the
+ * Marhiv alpenglow palette recolors accents and surfaces without touching DOM
+ * structure or layout — which keeps this resilient when Claude's markup shifts.
+ *
+ * This is injected into the HOST document (see PluginContext.injectCss), so
+ * selectors target the page, not a shadow root. If Claude renames its tokens,
+ * the mapping below is the single place to update. Apache-2.0.
+ */
+:root {
+  /* Marhiv alpenglow palette (mirrors assets/brand/tokens.css). */
+  --marhiv-twilight-violet: #7a2bb4;
+  --marhiv-aurora-magenta: #c42c9e;
+  --marhiv-alpenglow-coral: #fb6f57;
+  --marhiv-sky-cyan: #38bdf8;
+  --marhiv-glacier-teal: #2dd4bf;
+
+  /* --- Map Marhiv accents onto Claude's accent token family. --- */
+  --accent-main-000: var(--marhiv-twilight-violet);
+  --accent-main-100: var(--marhiv-twilight-violet);
+  --accent-main-200: var(--marhiv-aurora-magenta);
+  --accent-secondary-000: var(--marhiv-aurora-magenta);
+  --accent-secondary-100: var(--marhiv-aurora-magenta);
+  --accent-pro-000: var(--marhiv-aurora-magenta);
+  --accent-pro-100: var(--marhiv-twilight-violet);
+
+  /* Brand the link / info hue. */
+  --text-link: var(--marhiv-sky-cyan);
+}
+
+/*
+ * Generic, token-independent fallback: brand obvious accent surfaces even if
+ * the token names above miss. Kept deliberately narrow (the primary CTA and
+ * links) so it stays in "accent + surfaces" territory rather than a full reskin.
+ */
+a:not([class*='btn']):not([role='button']) {
+  color: var(--marhiv-sky-cyan);
+}
+
+::selection {
+  background: var(--marhiv-aurora-magenta);
+  color: #fff;
+}
