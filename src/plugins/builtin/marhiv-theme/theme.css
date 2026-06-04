@@ -1,47 +1,71 @@
 /*
- * marhiv-theme — accent + surfaces restyle of the host AI site (claude.ai).
+ * marhiv-theme — recolor claude.ai to the Marhiv palette (accent + surfaces).
  *
- * Strategy: recolor by OVERRIDING the host's design-token custom properties,
- * not by targeting its class names. Claude.ai exposes its palette as `--accent-*`
- * / `--bg-*` / `--text-*` custom properties on :root; reassigning them to the
- * Marhiv alpenglow palette recolors accents and surfaces without touching DOM
- * structure or layout — which keeps this resilient when Claude's markup shifts.
+ * claude.ai is built on the "Claude Design System". Two layers matter:
  *
- * This is injected into the HOST document (see PluginContext.injectCss), so
- * selectors target the page, not a shadow root. If Claude renames its tokens,
- * the mapping below is the single place to update. Apache-2.0.
+ *   1. ACCENT — the brand "clay" (#d97757), exposed both as raw HSL channels
+ *      (--_brand-clay, used as hsl(var(--_brand-clay))) and as hex aliases
+ *      (--cds-clay, used as var(--cds-clay)). We remap both to Marhiv Twilight
+ *      Violet → Aurora Magenta.
+ *
+ *   2. SURFACES — a neutral ramp --_gray-<weight> of HSL channel triplets that
+ *      every background/border is built from. We tint the DARK end of the ramp
+ *      toward Marhiv violet while PRESERVING each step's lightness (the L% is
+ *      unchanged). Keeping L fixed preserves every contrast relationship — text
+ *      stays readable and the sidebar-vs-canvas separation is retained — while
+ *      the hue/saturation pick up the brand. Light weights (text, light UI) are
+ *      left untouched so foreground contrast is never reduced.
+ *
+ * `!important` lets these win over Claude's mode-scoped redefinitions (e.g.
+ * under [data-mode="dark"]) regardless of selector specificity. Token names and
+ * the body→--_gray-800 mapping were verified against a live page snapshot
+ * (Dev → Export state); this block is the single place to update if the design
+ * system renames them. Injected into the HOST document (see
+ * PluginContext.injectCss), so selectors target the page. Apache-2.0.
  */
 :root {
-  /* Marhiv alpenglow palette (mirrors assets/brand/tokens.css). */
-  --marhiv-twilight-violet: #7a2bb4;
-  --marhiv-aurora-magenta: #c42c9e;
-  --marhiv-alpenglow-coral: #fb6f57;
-  --marhiv-sky-cyan: #38bdf8;
-  --marhiv-glacier-teal: #2dd4bf;
+  /* --- Accent --- */
+  /* Raw brand channels — consumed as hsl(var(--_brand-clay)). */
+  --_brand-clay: 274.6 61.4% 43.7% !important; /* Twilight Violet #7a2bb4 */
+  --_brand-clay-emphasized: 315 63.3% 47.1% !important; /* Aurora Magenta #c42c9e */
+  /* Semantic hex aliases — consumed as var(--cds-clay). */
+  --cds-clay: #7a2bb4 !important; /* Twilight Violet */
+  --cds-clay-emphasized: #c42c9e !important; /* Aurora Magenta */
 
-  /* --- Map Marhiv accents onto Claude's accent token family. --- */
-  --accent-main-000: var(--marhiv-twilight-violet);
-  --accent-main-100: var(--marhiv-twilight-violet);
-  --accent-main-200: var(--marhiv-aurora-magenta);
-  --accent-secondary-000: var(--marhiv-aurora-magenta);
-  --accent-secondary-100: var(--marhiv-aurora-magenta);
-  --accent-pro-000: var(--marhiv-aurora-magenta);
-  --accent-pro-100: var(--marhiv-twilight-violet);
-
-  /* Brand the link / info hue. */
-  --text-link: var(--marhiv-sky-cyan);
+  /* --- Surfaces: violet-tinted dark grays (hue 262, sat 42%, L preserved). --- */
+  --_gray-600: 262 42% 31% !important;
+  --_gray-650: 262 42% 26% !important;
+  --_gray-700: 262 42% 21% !important;
+  --_gray-750: 262 42% 17% !important;
+  --_gray-800: 262 42% 12% !important; /* main canvas (was #1f1f1e) */
+  --_gray-810: 262 42% 12% !important;
+  --_gray-820: 262 42% 11% !important;
+  --_gray-830: 262 42% 10% !important;
+  --_gray-840: 262 42% 9% !important;
+  --_gray-850: 262 42% 8% !important;
+  --_gray-860: 262 42% 7% !important;
+  --_gray-870: 262 42% 7% !important;
+  --_gray-880: 262 42% 6% !important;
+  --_gray-890: 262 42% 5% !important;
+  --_gray-900: 262 42% 4% !important;
+  /* Hex semantic alias in the dark range (same hue/sat/L treatment). */
+  --cds-gray-650: hsl(262 42% 26%) !important;
 }
 
 /*
- * Generic, token-independent fallback: brand obvious accent surfaces even if
- * the token names above miss. Kept deliberately narrow (the primary CTA and
- * links) so it stays in "accent + surfaces" territory rather than a full reskin.
+ * The "Claude Code" bar is an <aside> whose dark-mode background is a flat
+ * neutral (#262626 / hsl(0 0% 15%)) from Claude's --bg-* semantic token family,
+ * which lives outside the --_gray ramp retinted above — so it stays grey. Tint
+ * it directly, a touch lighter than the canvas to keep its raised look. (Follow-
+ * up: identify the exact --bg-* token so this can become a token override like
+ * the rest, rather than an element-targeted rule.)
  */
-a:not([class*='btn']):not([role='button']) {
-  color: var(--marhiv-sky-cyan);
+aside {
+  background-color: hsl(262 42% 16%) !important;
 }
 
+/* Brand the text selection to match the new accent. */
 ::selection {
-  background: var(--marhiv-aurora-magenta);
+  background: #c42c9e;
   color: #fff;
 }
