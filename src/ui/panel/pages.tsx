@@ -7,7 +7,7 @@
 // yet. Real configuration will flow through the Enhancement API once it exists.
 
 import type { ReactNode } from 'react'
-import { Field, PanelPage } from './PanelPage'
+import { PanelPage } from './PanelPage'
 import { PluginsPage } from './PluginsPage'
 
 export interface PanelPageDef {
@@ -18,24 +18,6 @@ export interface PanelPageDef {
   group?: 'top' | 'bottom'
   // Always a Panel Page (a <PanelPage>); the Panel renders this for the entry.
   Page: () => ReactNode
-}
-
-function GeneralPage(): ReactNode {
-  return (
-    <PanelPage title="General">
-      <p className="marhiv-page__lead">These settings apply across every AI site Marhiv runs on.</p>
-      <Field label="Enable on this site">
-        <input type="checkbox" defaultChecked />
-      </Field>
-      <Field label="Menu Ball size">
-        <select defaultValue="md">
-          <option value="sm">Small</option>
-          <option value="md">Medium</option>
-          <option value="lg">Large</option>
-        </select>
-      </Field>
-    </PanelPage>
-  )
 }
 
 function AboutPage(): ReactNode {
@@ -51,7 +33,6 @@ function AboutPage(): ReactNode {
 // at runtime via the Plugin Context (see src/store/panelPages.ts); the Panel
 // renders the two sets merged.
 export const BUILTIN_PAGES: PanelPageDef[] = [
-  { id: 'general', menu: { label: 'General', icon: '⚙' }, Page: GeneralPage },
   { id: 'plugins', menu: { label: 'Plugins', icon: '🧩' }, Page: PluginsPage },
   { id: 'about', menu: { label: 'About', icon: 'ⓘ' }, group: 'bottom', Page: AboutPage },
 ]

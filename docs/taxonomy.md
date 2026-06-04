@@ -110,6 +110,34 @@ The format and tooling for publishing and installing community **Plugins**.
 
 _See also: [Plugin](#plugin)._
 
+### Resolver
+
+The per-site, per-route function that maps a **Slot** name to a live element on
+the host page, keyed on stable anchors (`data-testid`, `aria-*`, `data-*` keys)
+rather than hashed classes.
+
+The single point that changes when the host reworks its markup: fix the Resolver
+and every **Plugin** targeting that Slot keeps working. Resolvers live in
+`src/sites/<site>/slots.ts` as a `SlotRegistry`; a child Slot's Resolver runs
+within its parent's resolved subtree, which disambiguates duplicates.
+
+_See also: [Slot](#slot), [Route Scope](#route-scope)._
+
+### Route Scope
+
+The route-bound context a **Plugin** enters via `ctx.onRoute(routeKey, handler)`,
+active only while a named route matches and torn down (via an `AbortSignal`) when
+the route is left.
+
+It hands the handler `{ url, signal, slot }`, where `slot(key)` resolves **Slots**
+against that route's registry — so on-page behavior is scoped to part of a site
+(e.g. `claude.ai/code`) even though the Plugin loads site-wide. Named routes are
+defined per site in `src/sites/<site>/routes.ts` (`RouteKey` + `matchRoutes`) and
+published to the route store on navigation. Teardown nests: plugin unload ⊃ route
+leave ⊃ slot absent.
+
+_See also: [Slot](#slot), [Resolver](#resolver), [Plugin Context](#plugin-context), [Plugin Manager](#plugin-manager)._
+
 ### Settings Panel
 
 The resizable settings window that opens when the user clicks the **Menu Ball**;
@@ -123,6 +151,23 @@ configuration forms live — the surface where **Plugin** and **Enhancement API*
 settings will appear as they land. Synonym: _Panel_.
 
 _See also: [Menu Ball](#menu-ball), [Plugin](#plugin), [Enhancement API](#enhancement-api)._
+
+### Slot
+
+A stable, semantic name for a region of a host AI site's UI (e.g. the sidebar,
+the "New session" row, the composer input) that **Plugins** target instead of
+writing selectors.
+
+Slots form a tree via `parent` — a child resolves within its parent's subtree —
+and each is mapped to live DOM per route by a **Resolver**. The shared `Slot`
+enum lives in `src/enhance/slots.ts`; per-site/route Resolvers live in
+`src/sites/<site>/slots.ts`. A Plugin reaches a Slot through a **Route Scope**
+(`ctx.onRoute(...).slot(key)`), getting a handle that adds native UI
+(`addAction`) or observes the element's presence (`whenPresent`) with teardown
+that survives host re-renders. The cross-site engine that resolves Slots and
+tracks their presence is the _Slots engine_.
+
+_See also: [Resolver](#resolver), [Route Scope](#route-scope), [Plugin Context](#plugin-context), [Enhancement API](#enhancement-api)._
 
 ### Userscript
 
