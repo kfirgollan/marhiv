@@ -1,4 +1,5 @@
-// Marhiv's on-page indicator: a draggable 32×32 circle pinned above the page.
+// Marhiv's on-page indicator (the "Menu Ball"): a draggable 32×32 logo disc
+// pinned above the page.
 //
 // Hovering reveals a drag handle to its left; dragging the handle moves the
 // circle, and its position is persisted (and kept in sync across pages) via
@@ -6,6 +7,10 @@
 // independent of the host page's stylesheets.
 
 import { loadPosition, savePosition, onPositionChange, type Position } from '../storage/position'
+// The simplified icon variant — a circular disc with transparent corners that
+// stays legible at small sizes (BRAND.md: use the icon below 64px). A 128px
+// source keeps it crisp on high-DPI screens when shown at 32px.
+import logoUrl from '../../assets/brand/icons/icon-128.png'
 
 const CONTAINER_ID = 'marhiv-indicator'
 const SIZE = 32
@@ -32,16 +37,27 @@ function applyPosition(el: HTMLElement, { left, top }: Position): void {
   el.style.top = `${top}px`
 }
 
-function createCircle(): HTMLDivElement {
-  const circle = document.createElement('div')
-  Object.assign(circle.style, {
+// The Menu Ball's face is the Marhiv logo. It's already a circular disc, so we
+// render it as-is — no border-radius crop, square plate, or drop shadow (all
+// disallowed by the brand guidelines).
+function createLogo(): HTMLImageElement {
+  const logo = document.createElement('img')
+  // The bundled asset path is root-relative (e.g. "/assets/icon-….png"); inside
+  // a content script it must be loaded from the extension origin, not the host
+  // page's. Resolve it through the extension URL (it's web-accessible).
+  logo.src = chrome.runtime.getURL(logoUrl.replace(/^\/+/, ''))
+  logo.alt = 'Marhiv'
+  // Disable the browser's native image drag so it never competes with our
+  // handle-based dragging.
+  logo.draggable = false
+  Object.assign(logo.style, {
     width: '100%',
     height: '100%',
-    borderRadius: '50%',
-    background: 'linear-gradient(135deg, #7c3aed, #ec4899)',
-    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
+    display: 'block',
+    objectFit: 'contain',
+    userSelect: 'none',
   } satisfies Partial<CSSStyleDeclaration>)
-  return circle
+  return logo
 }
 
 function createHandle(): HTMLDivElement {
@@ -88,8 +104,8 @@ export async function mountIndicator(): Promise<void> {
   } satisfies Partial<CSSStyleDeclaration>)
 
   const handle = createHandle()
-  const circle = createCircle()
-  container.append(handle, circle)
+  const logo = createLogo()
+  container.append(handle, logo)
   document.body.appendChild(container)
 
   applyPosition(container, clampToViewport((await loadPosition()) ?? defaultPosition()))
