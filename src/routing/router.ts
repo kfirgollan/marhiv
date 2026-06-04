@@ -9,7 +9,7 @@
 // appear on every page (the Menu Ball) mounts once via the Site's own `enter`,
 // outside the per-route machinery.
 
-import { publishCurrentRoute } from './currentRoute'
+import { useRouteStore } from '../store/route'
 import { observeNavigation } from './navigation'
 import type { Route, Site } from './types'
 
@@ -54,7 +54,8 @@ export class Router {
   // route whose captured params changed (e.g. /chat/a → /chat/b) so its
   // handler rebinds to the new identity.
   reconcile(url: URL): void {
-    publishCurrentRoute(url)
+    // Publish the detected route for any UI observing it (e.g. the Dev page).
+    useRouteStore.getState().setPath(url)
     for (const route of this.site.routes) {
       const match = route.pattern.exec(url.href)
       const current = this.active.get(route.id)
