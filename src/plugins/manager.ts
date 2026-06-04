@@ -65,7 +65,7 @@ export class PluginManager {
   }
 
   private async load(plugin: Plugin): Promise<void> {
-    const managed = createPluginContext()
+    const managed = createPluginContext(plugin.meta.id)
     // Register before awaiting so a concurrent reconcile can't double-load.
     this.active.set(plugin.meta.id, managed)
     try {
