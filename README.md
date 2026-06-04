@@ -56,6 +56,18 @@ After `npm run build` (or `npm run dev`), load the unpacked extension:
 
 A single content script targets `https://claude.ai/new`. When that page finishes loading, it logs `Hello from Marhiv!` to the page's DevTools console — a minimal proof that Marhiv's injection pipeline works end to end. Open DevTools (F12) on that page to see it.
 
+### Linting & formatting
+
+Code is linted with **ESLint** and formatted with **Prettier**; types are checked with **tsc**.
+
+```bash
+npm run lint         # eslint
+npm run format       # prettier --write
+npm run typecheck    # tsc --noEmit
+```
+
+A **Husky** pre-commit hook runs `typecheck` and, via **lint-staged**, ESLint + Prettier on staged files — so commits stay clean automatically. The hook installs itself on `npm install`.
+
 ## Contributing
 
 Marhiv is meant to be community-driven — the plugin registry only matters if people build for it. Contribution guidelines, a plugin authoring guide, and the registry format are on the roadmap. In the meantime, issues and ideas are welcome.

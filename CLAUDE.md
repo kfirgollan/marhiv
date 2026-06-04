@@ -35,6 +35,13 @@ The chosen stack. Honor it unless the user redirects:
 - `src/content/<tool>.ts` — one content script per AI tool. Each is declared in `manifest.config.ts` with its `matches` URL pattern.
 - No test runner is configured yet; add one (e.g. Vitest) when there's logic worth testing.
 
+### Quality gates
+
+- **Lint:** ESLint flat config (`eslint.config.js`) — `npm run lint` / `lint:fix`.
+- **Format:** Prettier (`.prettierrc.json`) — `npm run format` / `format:check`. No semicolons, single quotes.
+- **Types:** `npm run typecheck` (`tsc --noEmit`).
+- **Pre-commit:** a Husky hook (`.husky/pre-commit`) runs `typecheck` then `lint-staged` (ESLint + Prettier on staged files). Keep code lint-clean; don't bypass the hook with `--no-verify` without good reason.
+
 ## Anticipated architecture
 
 A likely shape once code lands (revise as the real structure emerges):
