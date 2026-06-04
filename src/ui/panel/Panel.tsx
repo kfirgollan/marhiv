@@ -6,25 +6,17 @@
 // brings its own title and body (see PanelPage.tsx / pages.tsx). Geometry lives
 // in geometry.ts; this component owns the React state and interactions.
 
-import { useEffect, useMemo, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+  type PointerEvent as ReactPointerEvent,
+} from 'react'
 import { loadPosition, onPositionChange, type Position } from '../../storage/position'
-import {
-  loadPanelSize,
-  savePanelSize,
-  loadPanelPage,
-  savePanelPage,
-  loadPanelMenuCollapsed,
-  savePanelMenuCollapsed,
-  type PanelSize,
-} from '../../storage/panel'
-import {
-  clamp,
-  computeGeometry,
-  DEFAULT_SIZE,
-  MIN_HEIGHT,
-  MIN_WIDTH,
-  type Corner,
-} from './geometry'
+import { usePanelSize, usePanelPage, usePanelCollapsed } from '../../store/panel'
+import { clamp, computeGeometry, MIN_HEIGHT, MIN_WIDTH, type Corner } from './geometry'
 import { PAGES } from './pages'
 import { PanelMenuItem } from './PanelMenuItem'
 
@@ -37,31 +29,26 @@ const GRIP_CURSOR: Record<Corner, string> = {
 
 export function Panel({ onClose }: { onClose: () => void }) {
   const [ball, setBall] = useState<Position | null>(null)
-  const [size, setSize] = useState<PanelSize>(DEFAULT_SIZE)
   const [viewport, setViewport] = useState(() => ({
     width: window.innerWidth,
     height: window.innerHeight,
   }))
-  const [activeId, setActiveId] = useState(PAGES[0].id)
-  // The whole menu collapses to icons-only; expanded by default. Each menu item
-  // renders its collapsed/expanded state from this.
-  const [collapsed, setCollapsed] = useState(false)
+  // The Panel's own persisted settings live in Zustand stores (src/store/panel),
+  // which hydrate from and write through chrome.storage and sync across tabs.
+  const size = usePanelSize((s) => s.value)
+  const setSizeLocal = usePanelSize((s) => s.setLocal)
+  const persistSize = usePanelSize((s) => s.persist)
+  const storedPage = usePanelPage((s) => s.value)
+  const setPage = usePanelPage((s) => s.set)
+  const collapsed = usePanelCollapsed((s) => s.value)
+  const setCollapsed = usePanelCollapsed((s) => s.set)
   const containerRef = useRef<HTMLDivElement>(null)
-  // Latest size, readable from the pointerup handler without stale closures.
-  const sizeRef = useRef(size)
-  sizeRef.current = size
 
-  // Load persisted state and keep ball position current across tabs.
+  // The ball's position is owned by the Menu Ball (src/ui/indicator.ts) on the
+  // storage layer; mirror it here and keep it current across tabs so the Panel
+  // stays anchored to it.
   useEffect(() => {
     void loadPosition().then((p) => p && setBall(p))
-    void loadPanelSize().then((s) => s && setSize(s))
-    void loadPanelPage().then((id) => {
-      if (id && PAGES.some((p) => p.id === id)) setActiveId(id)
-    })
-    // `!== null` rather than truthiness: `false` (expanded) is a real value.
-    void loadPanelMenuCollapsed().then((value) => {
-      if (value !== null) setCollapsed(value)
-    })
     return onPositionChange(setBall)
   }, [])
 
@@ -106,7 +93,9 @@ export function Panel({ onClose }: { onClose: () => void }) {
     const { anchorX, anchorY } = geometry
 
     const onMove = (move: PointerEvent): void => {
-      setSize({
+      // Update in memory live; persist once on release so a drag doesn't write
+      // to storage on every pointer move.
+      setSizeLocal({
         width: clamp(Math.abs(move.clientX - anchorX), MIN_WIDTH, viewport.width),
         height: clamp(Math.abs(move.clientY - anchorY), MIN_HEIGHT, viewport.height),
       })
@@ -115,25 +104,32 @@ export function Panel({ onClose }: { onClose: () => void }) {
       grip.releasePointerCapture(e.pointerId)
       grip.removeEventListener('pointermove', onMove)
       grip.removeEventListener('pointerup', onUp)
-      void savePanelSize(sizeRef.current)
+      persistSize()
     }
     grip.addEventListener('pointermove', onMove)
     grip.addEventListener('pointerup', onUp)
   }
 
-  const selectPage = (id: string): void => {
-    setActiveId(id)
-    void savePanelPage(id)
-  }
+  const selectPage = (id: string): void => setPage(id)
 
-  const toggleMenu = (): void => {
-    const next = !collapsed
-    setCollapsed(next)
-    void savePanelMenuCollapsed(next)
-  }
+  const toggleMenu = (): void => setCollapsed(!collapsed)
 
-  const active = PAGES.find((p) => p.id === activeId) ?? PAGES[0]
+  const active = PAGES.find((p) => p.id === storedPage) ?? PAGES[0]
   const ActivePage = active.Page
+
+  const topPages = PAGES.filter((p) => p.group !== 'bottom')
+  const bottomPages = PAGES.filter((p) => p.group === 'bottom')
+
+  const renderItem = (p: (typeof PAGES)[number]): ReactNode => (
+    <PanelMenuItem
+      key={p.id}
+      icon={p.menu.icon}
+      label={p.menu.label}
+      active={p.id === active.id}
+      collapsed={collapsed}
+      onSelect={() => selectPage(p.id)}
+    />
+  )
 
   return (
     <div
@@ -156,16 +152,12 @@ export function Panel({ onClose }: { onClose: () => void }) {
         >
           {collapsed ? '»' : '«'}
         </button>
-        {PAGES.map((p) => (
-          <PanelMenuItem
-            key={p.id}
-            icon={p.menu.icon}
-            label={p.menu.label}
-            active={p.id === active.id}
-            collapsed={collapsed}
-            onSelect={() => selectPage(p.id)}
-          />
-        ))}
+        <div className="marhiv-menu-group">{topPages.map(renderItem)}</div>
+        {bottomPages.length > 0 && (
+          <div className="marhiv-menu-group marhiv-menu-group--bottom">
+            {bottomPages.map(renderItem)}
+          </div>
+        )}
       </nav>
 
       <section className="marhiv-panel__content">

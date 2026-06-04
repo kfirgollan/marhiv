@@ -84,6 +84,20 @@
   color: var(--marhiv-snow);
 }
 
+/* Menu groups: a top group and a bottom group (e.g. About). */
+.marhiv-menu-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* The bottom group sinks to the foot of the rail, with a divider above it. */
+.marhiv-menu-group--bottom {
+  margin-top: auto;
+  padding-top: 6px;
+  border-top: 1px solid var(--marhiv-hairline);
+}
+
 .marhiv-menuitem {
   position: relative;
   display: flex;
@@ -116,6 +130,15 @@
 .marhiv-menuitem--active {
   background: var(--marhiv-primary);
   color: var(--marhiv-snow);
+}
+
+/*
+ * Hovering the active item must still read as clickable: shift to the accent
+ * shade (the button convention) instead of the muted hover background, which
+ * would otherwise win on specificity and make the active item look deselected.
+ */
+.marhiv-menuitem--active:hover {
+  background: var(--marhiv-accent);
 }
 
 .marhiv-menuitem__icon {
@@ -158,6 +181,15 @@
 .marhiv-menuitem:hover .marhiv-menuitem__tooltip,
 .marhiv-menuitem:focus-visible .marhiv-menuitem__tooltip {
   opacity: 1;
+}
+
+/*
+ * The active item's tooltip adopts its background (the accent shade shown while
+ * hovered) so the item and its tooltip read as one connected surface.
+ */
+.marhiv-menuitem--active .marhiv-menuitem__tooltip {
+  background: var(--marhiv-accent);
+  border-color: var(--marhiv-accent);
 }
 
 /* Content side — frames the active Panel Page. */
@@ -250,6 +282,29 @@
   padding: 3px 6px;
 }
 
+/* Action button, e.g. the Dev page's "Export state". */
+.marhiv-button {
+  align-self: flex-start;
+  padding: 6px 12px;
+  border: 1px solid var(--marhiv-hairline);
+  border-radius: 6px;
+  background: var(--marhiv-primary);
+  color: var(--marhiv-snow);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+
+.marhiv-button:hover {
+  background: var(--marhiv-accent);
+}
+
+.marhiv-button:focus-visible {
+  outline: 2px solid var(--marhiv-accent);
+  outline-offset: 1px;
+}
+
 /* Read-only value display, e.g. the Dev page's live readouts. */
 .marhiv-readout {
   min-width: 0;
@@ -263,6 +318,108 @@
   padding: 2px 6px;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+/* Search box — e.g. the Plugins page's filter. */
+.marhiv-search {
+  font: inherit;
+  color: var(--marhiv-snow);
+  background: var(--marhiv-surface);
+  border: 1px solid var(--marhiv-hairline);
+  border-radius: 6px;
+  padding: 5px 8px;
+}
+
+.marhiv-search::placeholder {
+  color: var(--marhiv-text-muted);
+}
+
+/* Plugins table — a row per plugin with a name/description cell and a toggle. */
+.marhiv-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.marhiv-table th {
+  padding: 0 0 6px;
+  border-bottom: 1px solid var(--marhiv-hairline);
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--marhiv-text-muted);
+}
+
+.marhiv-table td {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--marhiv-hairline);
+  vertical-align: top;
+}
+
+/* The toggle column hugs its content and sits to the right. */
+.marhiv-table__toggle {
+  width: 1%;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.marhiv-plugin__name {
+  color: var(--marhiv-snow);
+}
+
+.marhiv-plugin__desc {
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--marhiv-text-muted);
+}
+
+.marhiv-table__empty {
+  padding: 12px 0;
+  color: var(--marhiv-text-muted);
+  text-align: left;
+}
+
+/* Toggle switch — a checkbox restyled as an on/off slider. */
+.marhiv-toggle {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 18px;
+  margin: 0;
+  border: 1px solid var(--marhiv-hairline);
+  border-radius: 9px;
+  background: var(--marhiv-peak-shadow);
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+
+.marhiv-toggle::after {
+  content: '';
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--marhiv-snow);
+  transition: transform 120ms ease;
+}
+
+.marhiv-toggle:checked {
+  background: var(--marhiv-primary);
+}
+
+.marhiv-toggle:checked::after {
+  transform: translateX(16px);
+}
+
+.marhiv-toggle:focus-visible,
+.marhiv-search:focus-visible {
+  outline: 2px solid var(--marhiv-accent);
+  outline-offset: 1px;
 }
 
 /* Resize grip — one per corner; only the open-direction one is rendered. */

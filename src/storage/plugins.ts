@@ -16,8 +16,10 @@ function isPluginStates(value: unknown): value is PluginStates {
   )
 }
 
-const store = createPersistedValue<PluginStates>('pluginStates', isPluginStates)
+// Exposed as a PersistedValue; the reactive store in src/store/plugins.ts wraps
+// it for the Plugins page. The loose load/onChange are kept for the (non-React)
+// Plugin Manager.
+export const pluginStatesValue = createPersistedValue<PluginStates>('pluginStates', isPluginStates)
 
-export const loadPluginStates = store.load
-export const savePluginStates = store.save
-export const onPluginStatesChange = store.onChange
+export const loadPluginStates = pluginStatesValue.load
+export const onPluginStatesChange = pluginStatesValue.onChange

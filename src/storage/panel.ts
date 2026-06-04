@@ -18,24 +18,16 @@ function isPanelSize(value: unknown): value is PanelSize {
   )
 }
 
-const sizeStore = createPersistedValue<PanelSize>('panelSize', isPanelSize)
+// Exposed as PersistedValue objects; the reactive Panel stores in
+// src/store/panel.ts wrap them for the UI.
+export const panelSizeValue = createPersistedValue<PanelSize>('panelSize', isPanelSize)
 
-export const loadPanelSize = sizeStore.load
-export const savePanelSize = sizeStore.save
-export const onPanelSizeChange = sizeStore.onChange
-
-const pageStore = createPersistedValue<string>(
+export const panelPageValue = createPersistedValue<string>(
   'panelPage',
   (value): value is string => typeof value === 'string',
 )
 
-export const loadPanelPage = pageStore.load
-export const savePanelPage = pageStore.save
-
-const menuCollapsedStore = createPersistedValue<boolean>(
+export const panelMenuCollapsedValue = createPersistedValue<boolean>(
   'panelMenuCollapsed',
   (value): value is boolean => typeof value === 'boolean',
 )
-
-export const loadPanelMenuCollapsed = menuCollapsedStore.load
-export const savePanelMenuCollapsed = menuCollapsedStore.save

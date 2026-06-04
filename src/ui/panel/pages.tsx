@@ -14,6 +14,9 @@ import { DevPage } from './DevPage'
 export interface PanelPageDef {
   id: string
   menu: { label: string; icon: string }
+  // Which menu group the item sits in: 'top' (default) anchors to the top of the
+  // rail; 'bottom' anchors to the bottom, below a divider (e.g. About).
+  group?: 'top' | 'bottom'
   // Always a Panel Page (a <PanelPage>); the Panel renders this for the entry.
   Page: () => ReactNode
 }
@@ -48,6 +51,6 @@ function AboutPage(): ReactNode {
 export const PAGES: PanelPageDef[] = [
   { id: 'general', menu: { label: 'General', icon: '⚙' }, Page: GeneralPage },
   { id: 'plugins', menu: { label: 'Plugins', icon: '🧩' }, Page: PluginsPage },
-  { id: 'about', menu: { label: 'About', icon: 'ⓘ' }, Page: AboutPage },
+  { id: 'about', menu: { label: 'About', icon: 'ⓘ' }, group: 'bottom', Page: AboutPage },
   { id: 'dev', menu: { label: 'Dev', icon: '🛠' }, Page: DevPage },
 ]
