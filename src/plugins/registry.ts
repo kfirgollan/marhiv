@@ -5,6 +5,7 @@
 
 import type { Plugin } from './types'
 import { marhivTheme } from './builtin/marhiv-theme'
+import { dracula } from './builtin/dracula'
 import { marhivDev } from './builtin/marhiv-dev'
 
-export const BUILTIN_PLUGINS: Plugin[] = [marhivTheme, marhivDev]
+export const BUILTIN_PLUGINS: Plugin[] = [marhivTheme, dracula, marhivDev]
