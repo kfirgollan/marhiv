@@ -132,6 +132,14 @@ export const PAGES: PanelPageDef[] = [
 Place the entry thoughtfully in the array — menu order follows array order.
 Settings-like pages usually go before `about`/`dev`.
 
+By default an item sits in the top menu group. To anchor it to the **bottom**
+group (below the divider, where `About` lives — for meta/secondary pages), add
+`group: 'bottom'`:
+
+```tsx
+{ id: 'about', menu: { label: 'About', icon: 'ⓘ' }, group: 'bottom', Page: AboutPage }
+```
+
 ### Step 5: Verify
 
 Run the quality gates and fix anything they flag:
