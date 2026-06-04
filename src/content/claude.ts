@@ -1,17 +1,15 @@
 // Marhiv content script — Claude (https://claude.ai/new)
 //
-// v0.0.1: the smallest possible enhancement. It just confirms that Marhiv's
-// content script is injected and runs once the page has finished loading.
-// This is the seed the real enhancement pipeline will grow from.
+// v0.0.1: mounts Marhiv's draggable corner indicator. This is the entry point
+// for the Claude integration; the indicator itself is a shared, cross-tool UI
+// piece (see src/ui/indicator.ts).
 
-function announce(): void {
-  console.log('Hello from Marhiv!')
-}
+import { mountIndicator } from '../ui/indicator'
 
 // `run_at: document_idle` usually fires after `load`, so the page is often
 // already complete by the time we run — but guard for the early case too.
 if (document.readyState === 'complete') {
-  announce()
+  void mountIndicator()
 } else {
-  window.addEventListener('load', announce, { once: true })
+  window.addEventListener('load', () => void mountIndicator(), { once: true })
 }

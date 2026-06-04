@@ -10,6 +10,24 @@ export default defineManifest({
   name: 'Marhiv',
   version: pkg.version,
   description: pkg.description,
+  icons: {
+    16: 'assets/brand/icons/icon-16.png',
+    32: 'assets/brand/icons/icon-32.png',
+    48: 'assets/brand/icons/icon-48.png',
+    128: 'assets/brand/icons/icon-128.png',
+  },
+  action: {
+    default_title: 'Marhiv',
+    default_icon: {
+      16: 'assets/brand/icons/icon-16.png',
+      32: 'assets/brand/icons/icon-32.png',
+      48: 'assets/brand/icons/icon-48.png',
+      128: 'assets/brand/icons/icon-128.png',
+    },
+  },
+  // `storage` lets the indicator persist its position across page loads and
+  // share it between every page Marhiv runs on.
+  permissions: ['storage'],
   content_scripts: [
     {
       matches: ['https://claude.ai/new'],
