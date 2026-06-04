@@ -77,14 +77,18 @@ _See also: [Plugin Manager](#plugin-manager), [Plugin Context](#plugin-context),
 ### Plugin Context
 
 The capabilities Marhiv lends a **Plugin** for the duration of its active life,
-passed to `onLoad`/`onUnload` — the first, smallest slice of the **Enhancement API**.
+passed to `onLoad`/`onUnload` — the live surface of the **Enhancement API**.
 
-Page mutations made through the context are tracked so the **Plugin Manager** can
-reverse them on unload, which is why a well-behaved Plugin often needs no
-`onUnload`. It starts with a single capability, `injectCss` (inject a stylesheet
-into the host page), and grows as Plugins need more. Lives at `src/plugins/context.ts`.
+It offers `injectCss` (inject a tracked stylesheet into the host page),
+`registerPage` (contribute a **Panel Page** and its **Panel Menu Item** to the
+settings Panel), and `stores` (read-only access to Marhiv's reactive app stores —
+e.g. the route store — so plugin UI can show live state). Every effect created
+through the context is tracked, so disposing it on unload reverses the plugin's
+changes (removed styles, unregistered pages) — which is why a well-behaved Plugin
+often needs no `onUnload`. Grows as plugins need more. Lives at
+`src/plugins/context.ts`.
 
-_See also: [Plugin](#plugin), [Plugin Manager](#plugin-manager), [Enhancement API](#enhancement-api)._
+_See also: [Plugin](#plugin), [Plugin Manager](#plugin-manager), [Panel Page](#panel-page), [Enhancement API](#enhancement-api)._
 
 ### Plugin Manager
 

@@ -9,7 +9,6 @@
 import type { ReactNode } from 'react'
 import { Field, PanelPage } from './PanelPage'
 import { PluginsPage } from './PluginsPage'
-import { DevPage } from './DevPage'
 
 export interface PanelPageDef {
   id: string
@@ -48,9 +47,11 @@ function AboutPage(): ReactNode {
   )
 }
 
-export const PAGES: PanelPageDef[] = [
+// The first-party pages that always exist. Plugins contribute additional pages
+// at runtime via the Plugin Context (see src/store/panelPages.ts); the Panel
+// renders the two sets merged.
+export const BUILTIN_PAGES: PanelPageDef[] = [
   { id: 'general', menu: { label: 'General', icon: '⚙' }, Page: GeneralPage },
   { id: 'plugins', menu: { label: 'Plugins', icon: '🧩' }, Page: PluginsPage },
   { id: 'about', menu: { label: 'About', icon: 'ⓘ' }, group: 'bottom', Page: AboutPage },
-  { id: 'dev', menu: { label: 'Dev', icon: '🛠' }, Page: DevPage },
 ]

@@ -57,9 +57,11 @@ The **Plugin Manager** (`src/plugins/manager.ts`) owns the lifecycle on a page:
 - It calls **`onUnload`** when the plugin is disabled or the URL stops matching
   (it also reacts live to toggles in this or another tab, and to SPA navigation).
 - It hands both hooks a **Plugin Context** (`src/plugins/context.ts`) — the
-  capabilities Marhiv lends the plugin. Today that's a single method,
-  `injectCss(css)`, which injects a `<style>` into the host page **and tracks
-  it**, so the manager removes it automatically on unload.
+  capabilities Marhiv lends the plugin. Today that's `injectCss(css)` (inject a
+  tracked `<style>` into the host page), `registerPage(page)` (contribute a Panel
+  Page + its menu item to the settings Panel), and `stores` (read-only access to
+  Marhiv's reactive app stores). Everything created through the context is
+  **tracked**, so the manager reverses it automatically on unload.
 
 The key consequence: **anything you do through the context is torn down for you,
 so most plugins need no `onUnload`.** If you mutate the page outside the context

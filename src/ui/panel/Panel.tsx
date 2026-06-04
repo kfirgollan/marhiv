@@ -17,7 +17,8 @@ import {
 import { loadPosition, onPositionChange, type Position } from '../../storage/position'
 import { usePanelSize, usePanelPage, usePanelCollapsed } from '../../store/panel'
 import { clamp, computeGeometry, MIN_HEIGHT, MIN_WIDTH, type Corner } from './geometry'
-import { PAGES } from './pages'
+import { BUILTIN_PAGES, type PanelPageDef } from './pages'
+import { usePanelPages } from '../../store/panelPages'
 import { PanelMenuItem } from './PanelMenuItem'
 
 const GRIP_CURSOR: Record<Corner, string> = {
@@ -42,6 +43,8 @@ export function Panel({ onClose }: { onClose: () => void }) {
   const setPage = usePanelPage((s) => s.set)
   const collapsed = usePanelCollapsed((s) => s.value)
   const setCollapsed = usePanelCollapsed((s) => s.set)
+  // Pages contributed by plugins at runtime, merged with the built-ins below.
+  const registeredPages = usePanelPages((s) => s.pages)
   const containerRef = useRef<HTMLDivElement>(null)
 
   // The ball's position is owned by the Menu Ball (src/ui/indicator.ts) on the
@@ -114,13 +117,14 @@ export function Panel({ onClose }: { onClose: () => void }) {
 
   const toggleMenu = (): void => setCollapsed(!collapsed)
 
-  const active = PAGES.find((p) => p.id === storedPage) ?? PAGES[0]
+  const pages = [...BUILTIN_PAGES, ...registeredPages]
+  const active = pages.find((p) => p.id === storedPage) ?? pages[0]
   const ActivePage = active.Page
 
-  const topPages = PAGES.filter((p) => p.group !== 'bottom')
-  const bottomPages = PAGES.filter((p) => p.group === 'bottom')
+  const topPages = pages.filter((p) => p.group !== 'bottom')
+  const bottomPages = pages.filter((p) => p.group === 'bottom')
 
-  const renderItem = (p: (typeof PAGES)[number]): ReactNode => (
+  const renderItem = (p: PanelPageDef): ReactNode => (
     <PanelMenuItem
       key={p.id}
       icon={p.menu.icon}

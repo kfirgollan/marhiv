@@ -13,6 +13,12 @@ only write the page and register it.
 Consult `docs/taxonomy.md` for the precise meaning of **Panel Page**, **Panel
 Menu Item**, and **Settings Panel** before starting.
 
+> This skill adds a **first-party, always-present** page (registered in
+> `pages.tsx`). If the page belongs to a **Plugin** — appearing only when that
+> plugin is enabled — don't register it here; have the plugin's `onLoad` call
+> `ctx.registerPage(...)` instead (see `/plugin-create` and the `marhiv-dev`
+> plugin). Either way the page is a `<PanelPage>` built the same way.
+
 ## Input
 
 Arguments: $ARGUMENTS

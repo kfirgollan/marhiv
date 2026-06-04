@@ -6,11 +6,16 @@
 // dump instead of guessed at.
 //
 // It reads only styling/metadata — never chat or message content.
+//
+// Note the import cycle this closes: registry → marhiv-dev → DevPage → snapshot
+// → registry/manager. It's safe because `BUILTIN_PLUGINS` and `isEnabled` are
+// only read at call time (inside collectDebugState), by which point every module
+// has finished initializing — ES live bindings resolve them correctly.
 
-import { loadPluginStates, type PluginStates } from '../storage/plugins'
-import { BUILTIN_PLUGINS } from '../plugins/registry'
-import { isEnabled } from '../plugins/manager'
-import { PLUGIN_STYLE_ATTR } from '../plugins/context'
+import { loadPluginStates, type PluginStates } from '../../../storage/plugins'
+import { PLUGIN_STYLE_ATTR } from '../../context'
+import { BUILTIN_PLUGINS } from '../../registry'
+import { isEnabled } from '../../manager'
 
 interface ColorReadout {
   backgroundColor: string
