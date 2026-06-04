@@ -8,24 +8,32 @@ Guidance for Claude Code (and other agents) working in this repository.
 
 Two complementary enhancement mechanisms (the **hybrid** model):
 
-1. **Plugins** — curated, first-party enhancements that live in this repo and are published to a community **registry**. Each plugin declares the AI sites it targets and the behavior it adds. This is the *Oh My Zsh* half: vetted, installable, configurable.
-2. **Userscripts** — sandboxed, user-authored, site-matched scripts for cases curated plugins don't cover. This is the *Tampermonkey* half: an escape hatch for power users.
+1. **Plugins** — curated, first-party enhancements that live in this repo and are published to a community **registry**. Each plugin declares the AI sites it targets and the behavior it adds. This is the _Oh My Zsh_ half: vetted, installable, configurable.
+2. **Userscripts** — sandboxed, user-authored, site-matched scripts for cases curated plugins don't cover. This is the _Tampermonkey_ half: an escape hatch for power users.
 
 Keep both in mind when making architectural decisions — anything plugins can do should ideally be expressible through a shared, documented enhancement API that userscripts also use.
 
 ## Current status
 
-**Pre-alpha — first commit.** As of now the repo contains only `LICENSE`, `README.md`, and this file. There is **no build tooling, source code, or tests yet**. When you scaffold something, update this file so it reflects reality rather than intentions. Do not describe code that doesn't exist as if it does.
+**Pre-alpha — v0.0.1.** The build toolchain is in place and produces a loadable MV3 extension. The only behavior so far is a single content script on `https://claude.ai/new` that logs `Hello from Marhiv!` once the page loads (`src/content/claude.ts`) — a seed proving the injection pipeline works end to end. No background worker, extension UI, plugin system, or tests exist yet. Update this file as those land; don't describe code that doesn't exist as if it does.
 
-## Intended tech stack
+## Tech stack
 
-These are the chosen defaults for the project. Honor them unless the user redirects:
+The chosen stack. Honor it unless the user redirects:
 
-- **Language:** TypeScript (strict).
+- **Language:** TypeScript (strict). See `tsconfig.json`.
 - **Extension platform:** Chromium **Manifest V3** (service worker background, content scripts).
-- **Bundler:** **Vite** with **CRXJS** (`@crxjs/vite-plugin`) for MV3 builds + HMR.
-- **UI:** **React** for the popup and options/settings pages.
+- **Bundler:** **Vite 8** with **CRXJS** (`@crxjs/vite-plugin` ^2.4) for MV3 builds + HMR.
+- **UI:** **React** for the popup and options/settings pages _(not added yet — introduce when the first UI surface appears)_.
 - **Output:** a loadable unpacked extension in `dist/`.
+
+## Build & layout
+
+- `npm run dev` — watch build with HMR. `npm run build` — production build to `dist/`.
+- `manifest.config.ts` — the MV3 manifest via CRXJS `defineManifest`, version sourced from `package.json`. **Add new content scripts / permissions here.**
+- `vite.config.ts` — wires the CRXJS plugin.
+- `src/content/<tool>.ts` — one content script per AI tool. Each is declared in `manifest.config.ts` with its `matches` URL pattern.
+- No test runner is configured yet; add one (e.g. Vitest) when there's logic worth testing.
 
 ## Anticipated architecture
 

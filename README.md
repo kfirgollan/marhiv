@@ -1,6 +1,6 @@
 # Marhiv
 
-**Marhiv** (Hebrew: מרהיב, *"spectacular"*) is a Chromium browser extension that makes the AI chatbots you already use *your own*.
+**Marhiv** (Hebrew: מרהיב, _"spectacular"_) is a Chromium browser extension that makes the AI chatbots you already use _your own_.
 
 Think **Tampermonkey × Oh My Zsh**, purpose-built for AI tools: a framework for layering enhancements — UI tweaks, prompt helpers, keyboard shortcuts, themes, and automations — onto sites like ChatGPT, Claude, Gemini, and more. Install curated plugins from a community registry, or write your own userscript-style enhancements when you want full control.
 
@@ -11,8 +11,8 @@ Think **Tampermonkey × Oh My Zsh**, purpose-built for AI tools: a framework for
 AI chat interfaces are powerful but one-size-fits-all. Marhiv is the customization layer on top:
 
 - **Make it yours** — themes, layout tweaks, and quality-of-life fixes for the AI sites you live in.
-- **Curated, not chaotic** — a community registry of vetted plugins you can browse and install in a click (the *Oh My Zsh* part).
-- **Escape hatch for power users** — write or paste your own site-matched scripts when no plugin exists (the *Tampermonkey* part).
+- **Curated, not chaotic** — a community registry of vetted plugins you can browse and install in a click (the _Oh My Zsh_ part).
+- **Escape hatch for power users** — write or paste your own site-matched scripts when no plugin exists (the _Tampermonkey_ part).
 - **Cross-tool** — one place to manage enhancements across every AI chatbot, instead of one bookmarklet per site.
 
 ## How it works (planned)
@@ -36,20 +36,25 @@ The initial target set (subject to change as we build):
 
 ## Getting started
 
-> Build instructions will land here once the toolchain is in place. The planned stack is **TypeScript + Vite (CRXJS) + React**, targeting **Manifest V3**.
+Marhiv is built with **TypeScript + Vite (CRXJS)**, targeting **Manifest V3**.
 
 ```bash
-# coming soon
 npm install
-npm run dev      # watch build for local development
+npm run dev      # watch build with HMR for local development
 npm run build    # production build → dist/
 ```
 
-To load the unpacked extension during development:
+### Load it in your browser
 
-1. Run the dev/build command above to produce `dist/`.
-2. Open `chrome://extensions` and enable **Developer mode**.
-3. Click **Load unpacked** and select the `dist/` directory.
+After `npm run build` (or `npm run dev`), load the unpacked extension:
+
+**Chrome:** open `chrome://extensions`, enable **Developer mode**, click **Load unpacked**, and select the `dist/` directory.
+
+**Edge:** open `edge://extensions`, enable **Developer mode** (toggle on the left), click **Load unpacked**, and select the `dist/` directory.
+
+### What v0.0.1 does
+
+A single content script targets `https://claude.ai/new`. When that page finishes loading, it logs `Hello from Marhiv!` to the page's DevTools console — a minimal proof that Marhiv's injection pipeline works end to end. Open DevTools (F12) on that page to see it.
 
 ## Contributing
 
