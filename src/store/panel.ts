@@ -7,6 +7,7 @@ import {
   panelSizeValue,
   panelPageValue,
   panelMenuCollapsedValue,
+  panelMaximizedValue,
   type PanelSize,
 } from '../storage/panel'
 import { DEFAULT_SIZE } from '../ui/panel/geometry'
@@ -16,3 +17,4 @@ export const usePanelSize = createPersistedStore<PanelSize>(panelSizeValue, DEFA
 // '' is a sentinel "nothing chosen yet"; the Panel falls back to its first page.
 export const usePanelPage = createPersistedStore<string>(panelPageValue, '')
 export const usePanelCollapsed = createPersistedStore<boolean>(panelMenuCollapsedValue, false)
+export const usePanelMaximized = createPersistedStore<boolean>(panelMaximizedValue, false)

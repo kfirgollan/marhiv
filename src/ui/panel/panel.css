@@ -22,6 +22,14 @@
   box-sizing: border-box;
 }
 
+/* Dim backdrop behind the maximized (modal) Panel; sits just below it. */
+.marhiv-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483645;
+  background: rgba(11, 6, 24, 0.55);
+}
+
 .marhiv-panel {
   position: fixed;
   z-index: 2147483646;
@@ -54,6 +62,40 @@
 .marhiv-panel__nav--collapsed {
   width: 48px;
   padding: 8px 6px;
+}
+
+/* Brand mark — the persistent Marhiv logo (+ wordmark when expanded) at the
+ * head of the rail, so the brand stays visible across every menu item. */
+.marhiv-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px 8px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--marhiv-hairline);
+}
+
+.marhiv-panel__nav--collapsed .marhiv-brand {
+  justify-content: center;
+  padding: 4px 0 8px;
+}
+
+.marhiv-brand__logo {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  user-select: none;
+}
+
+.marhiv-brand__name {
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--marhiv-snow);
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 /* Collapse/expand toggle — sits above the menu items. */
@@ -201,25 +243,35 @@
   min-width: 0;
 }
 
-/* Close control — Panel chrome, floated over the page's header corner. */
-.marhiv-close {
+/* Header controls — Panel chrome (maximize/restore + close), floated over the
+ * page's header corner. */
+.marhiv-panel__controls {
   position: absolute;
-  top: 7px;
+  top: 6px;
   right: 8px;
   z-index: 1;
+  display: flex;
+  gap: 2px;
+}
+
+.marhiv-iconbtn {
   border: 0;
   background: transparent;
   color: var(--marhiv-text-muted);
-  font-size: 18px;
+  font-size: 15px;
   line-height: 1;
   cursor: pointer;
-  padding: 2px 6px;
+  padding: 3px 6px;
   border-radius: 6px;
 }
 
-.marhiv-close:hover {
+.marhiv-iconbtn:hover {
   background: var(--marhiv-peak-shadow);
   color: var(--marhiv-snow);
+}
+
+.marhiv-close {
+  font-size: 18px;
 }
 
 /* Panel Page — a title header above a scrollable body. */
@@ -231,8 +283,8 @@
 }
 
 .marhiv-page__header {
-  /* Right padding clears the floating close control. */
-  padding: 10px 36px 10px 12px;
+  /* Right padding clears the floating header controls (maximize + close). */
+  padding: 10px 64px 10px 12px;
   border-bottom: 1px solid var(--marhiv-hairline);
 }
 

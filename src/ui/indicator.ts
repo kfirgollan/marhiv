@@ -8,10 +8,7 @@
 
 import { loadPosition, savePosition, onPositionChange, type Position } from '../storage/position'
 import { mountPanel } from './panel/mount'
-// The simplified icon variant — a circular disc with transparent corners that
-// stays legible at small sizes (BRAND.md: use the icon below 64px). A 128px
-// source keeps it crisp on high-DPI screens when shown at 32px.
-import logoUrl from '../../assets/brand/icons/icon-128.png'
+import { MARHIV_LOGO_URL } from './logo'
 
 const CONTAINER_ID = 'marhiv-indicator'
 const SIZE = 32
@@ -43,10 +40,7 @@ function applyPosition(el: HTMLElement, { left, top }: Position): void {
 // disallowed by the brand guidelines).
 function createLogo(): HTMLImageElement {
   const logo = document.createElement('img')
-  // The bundled asset path is root-relative (e.g. "/assets/icon-….png"); inside
-  // a content script it must be loaded from the extension origin, not the host
-  // page's. Resolve it through the extension URL (it's web-accessible).
-  logo.src = chrome.runtime.getURL(logoUrl.replace(/^\/+/, ''))
+  logo.src = MARHIV_LOGO_URL
   logo.alt = 'Marhiv'
   // Disable the browser's native image drag so it never competes with our
   // handle-based dragging.

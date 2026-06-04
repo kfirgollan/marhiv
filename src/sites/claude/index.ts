@@ -6,8 +6,11 @@
 // Adding page-specific behavior (e.g. claude.ai/code/*) is a new route entry
 // here, not a change to the routing infrastructure.
 
-import { mountIndicator } from '../ui/indicator'
-import type { Site } from '../routing/types'
+import { mountIndicator } from '../../ui/indicator'
+import type { Site } from '../../routing/types'
+
+export { matchRoutes, RouteKey } from './routes'
+export { claudeEnhancements } from './slots'
 
 export const claudeSite: Site = {
   id: 'claude',

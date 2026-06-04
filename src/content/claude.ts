@@ -7,8 +7,18 @@
 //     the current URL (src/plugins/manager.ts).
 
 import { startRouter } from '../routing/router'
-import { claudeSite } from '../sites/claude'
+import { claudeSite, claudeEnhancements, matchRoutes } from '../sites/claude'
+import { observeNavigation } from '../routing/navigation'
+import { useRouteStore } from '../store/route'
 import { PluginManager } from '../plugins/manager'
 
 startRouter(claudeSite)
-void new PluginManager().init()
+
+// Publish the active named routes on every navigation, so route-scoped plugin
+// behavior (ctx.onRoute) and the Panel can react. One tracker for the page,
+// rather than each plugin re-matching the URL itself.
+const publishRoutes = (url: URL): void => useRouteStore.getState().setRoutes(matchRoutes(url))
+publishRoutes(new URL(location.href))
+observeNavigation(publishRoutes)
+
+void new PluginManager(claudeEnhancements).init()

@@ -6,6 +6,7 @@
 
 import { usePanelPages } from '../store/panelPages'
 import { useRouteStore } from '../store/route'
+import { createSlotHandle, type SiteEnhancements } from '../enhance/slots'
 import type { PluginContext } from './types'
 
 // Marks each <style> the context injects with its owning plugin's id. Lets the
@@ -20,7 +21,10 @@ export interface ManagedContext {
   dispose(): void
 }
 
-export function createPluginContext(pluginId: string): ManagedContext {
+export function createPluginContext(
+  pluginId: string,
+  enhancements: SiteEnhancements,
+): ManagedContext {
   // Every capability that creates something records how to undo it here, so
   // dispose() is a single uniform teardown regardless of what the plugin used.
   const cleanups: Array<() => void> = []
@@ -38,6 +42,35 @@ export function createPluginContext(pluginId: string): ManagedContext {
     },
     stores: {
       route: useRouteStore,
+    },
+    onRoute(route, handler) {
+      // A mini-router for one route name, driven by the active routes the
+      // content script publishes to the route store. `evaluate` is idempotent:
+      // it only acts on the active↔inactive transition, so subscribing to every
+      // store change (not just routes) is harmless.
+      let scope: AbortController | null = null
+      const evaluate = (routes: string[]): void => {
+        const active = routes.includes(route)
+        if (active && !scope) {
+          scope = new AbortController()
+          const registry = enhancements.slotsForRoute(route)
+          const signal = scope.signal
+          handler({
+            url: new URL(location.href),
+            signal,
+            slot: (key) => createSlotHandle(registry, key, signal),
+          })
+        } else if (!active && scope) {
+          scope.abort()
+          scope = null
+        }
+      }
+      evaluate(useRouteStore.getState().routes)
+      const unsubscribe = useRouteStore.subscribe((state) => evaluate(state.routes))
+      cleanups.push(() => {
+        scope?.abort()
+        unsubscribe()
+      })
     },
   }
 

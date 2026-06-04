@@ -10,6 +10,7 @@
 
 import type { PanelPageDef } from '../ui/panel/pages'
 import type { useRouteStore } from '../store/route'
+import type { SlotHandle, SlotKey } from '../enhance/slots'
 
 export interface PluginMeta {
   // Stable, unique identifier; the storage key for this plugin's enabled state.
@@ -34,6 +35,21 @@ export interface PluginStores {
   route: typeof useRouteStore
 }
 
+// What a route-scoped handler receives. It mirrors the Router's RouteContext:
+// `signal` aborts when the route stops matching (navigation away), so anything
+// wired to it tears down on leave. `slot` resolves the Slots engine against
+// THIS route's registry, so a slot only reachable on this route is impossible
+// to misuse elsewhere.
+export interface RouteScope {
+  // The URL active when the route was entered.
+  readonly url: URL
+  // Aborted when the route stops matching, nested under the plugin's own
+  // teardown (disable/unload aborts it too).
+  readonly signal: AbortSignal
+  // A handle for a slot on this route — add native UI, observe presence.
+  slot(key: SlotKey): SlotHandle
+}
+
 // The capabilities Marhiv lends a Plugin for the duration of its active life.
 // Anything that mutates the page or registers UI is tracked so the manager can
 // undo it on unload — so a well-behaved plugin often needs no `onUnload` at all.
@@ -49,6 +65,12 @@ export interface PluginContext {
   registerPage(page: PanelPageDef): void
   // Marhiv's app stores, for a plugin's UI to read live state.
   stores: PluginStores
+  // Run `handler` whenever a named route (e.g. `RouteKey.Code`) is active on the
+  // host, re-running on re-entry and aborting its scope's signal on leave. The
+  // subscription is tracked, so it stops when the plugin unloads. This is how a
+  // plugin scopes on-page behavior to part of a site (e.g. only claude.ai/code)
+  // while still loading site-wide for its always-on UI.
+  onRoute(route: string, handler: (scope: RouteScope) => void): void
 }
 
 export interface Plugin {

@@ -1,22 +1,16 @@
-// dracula — a built-in theme Plugin that restyles the host AI site with the
-// Dracula palette. Like marhiv-theme it only injects CSS through the context
-// (which the manager tracks and removes on unload), so there's no `onUnload`.
+// dracula — the Dracula palette. Built from the shared claude-theme kit; see
+// ../claude-theme.ts for how the host token mapping works.
 
-import type { Plugin } from '../../types'
-// `?inline` hands us the stylesheet as a string so we can inject it into the
-// host page ourselves (see PluginContext.injectCss), rather than letting Vite
-// append it to <head> at build time regardless of whether the plugin is on.
-import themeCss from './theme.css?inline'
+import { createClaudeTheme } from '../claude-theme'
 
-export const dracula: Plugin = {
-  meta: {
-    id: 'dracula',
-    name: 'Dracula',
-    description: 'Recolors the page with the Dracula palette.',
-    matches: ['https://claude.ai/*'],
-    defaultEnabled: false,
-  },
-  onLoad(ctx) {
-    ctx.injectCss(themeCss)
-  },
-}
+export const dracula = createClaudeTheme({
+  id: 'dracula',
+  name: 'Dracula',
+  description: 'Recolors the page with the Dracula palette.',
+  accent: { hex: '#bd93f9', channels: '264.7 89.5% 77.6%' }, // purple
+  accentEmphasized: { hex: '#ff79c6', channels: '325.5 100% 73.7%' }, // pink
+  surfaceHue: 231,
+  surfaceSat: 16,
+  selectionBg: '#44475a',
+  selectionFg: '#f8f8f2',
+})

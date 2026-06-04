@@ -1,6 +1,7 @@
 // Persisted state for the settings Panel: its size, the page the user last had
-// open, and whether the menu is collapsed. Open/closed is deliberately NOT
-// persisted — the Panel always starts closed on a fresh page load.
+// open, whether the menu is collapsed, and whether it's maximized (full-page
+// modal). Open/closed is deliberately NOT persisted — the Panel always starts
+// closed on a fresh page load — but maximized IS, so reopening restores it.
 
 import { createPersistedValue } from './persisted'
 
@@ -29,5 +30,10 @@ export const panelPageValue = createPersistedValue<string>(
 
 export const panelMenuCollapsedValue = createPersistedValue<boolean>(
   'panelMenuCollapsed',
+  (value): value is boolean => typeof value === 'boolean',
+)
+
+export const panelMaximizedValue = createPersistedValue<boolean>(
+  'panelMaximized',
   (value): value is boolean => typeof value === 'boolean',
 )

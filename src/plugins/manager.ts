@@ -10,6 +10,7 @@
 
 import { loadPluginStates, onPluginStatesChange, type PluginStates } from '../storage/plugins'
 import { observeNavigation } from '../routing/navigation'
+import type { SiteEnhancements } from '../enhance/slots'
 import { BUILTIN_PLUGINS } from './registry'
 import { createPluginContext, type ManagedContext } from './context'
 import type { Plugin } from './types'
@@ -36,6 +37,10 @@ export class PluginManager {
   private active = new Map<string, ManagedContext>()
   private states: PluginStates = {}
   private url = location.href
+
+  // `enhancements` is the host site's slot/route data, lent to each plugin's
+  // context so `ctx.onRoute`/`slot(...)` resolve against this site.
+  constructor(private readonly enhancements: SiteEnhancements) {}
 
   // Activate currently-enabled plugins and keep them in sync with two inputs:
   // storage (the user toggling a plugin, here or in another tab) and SPA
@@ -65,7 +70,7 @@ export class PluginManager {
   }
 
   private async load(plugin: Plugin): Promise<void> {
-    const managed = createPluginContext(plugin.meta.id)
+    const managed = createPluginContext(plugin.meta.id, this.enhancements)
     // Register before awaiting so a concurrent reconcile can't double-load.
     this.active.set(plugin.meta.id, managed)
     try {
