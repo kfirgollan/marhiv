@@ -7,7 +7,8 @@ import globals from 'globals'
 // recommended set, then our overrides, and finally `prettier` last so it can
 // switch off any stylistic rules that would fight the formatter.
 export default tseslint.config(
-  { ignores: ['dist/', 'node_modules/'] },
+  // `assets/` holds brand source + a Node render script, not app code.
+  { ignores: ['dist/', 'node_modules/', 'assets/'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
