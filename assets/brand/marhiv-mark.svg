@@ -1,0 +1,74 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Marhiv">
+  <defs>
+    <!-- Alpenglow sky: deep summit indigo down to warm amber horizon -->
+    <linearGradient id="sky" x1="128" y1="0" x2="128" y2="256" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3A1378"/>
+      <stop offset="0.34" stop-color="#7A2BB4"/>
+      <stop offset="0.58" stop-color="#C42C9E"/>
+      <stop offset="0.80" stop-color="#FB6F57"/>
+      <stop offset="1" stop-color="#FFC24B"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFF7DC"/>
+      <stop offset="0.45" stop-color="#FFD46A"/>
+      <stop offset="1" stop-color="#FFB23E" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Hero peak, sunlit face -->
+    <linearGradient id="lit" x1="120" y1="48" x2="210" y2="188" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFB37A"/>
+      <stop offset="1" stop-color="#F0567E"/>
+    </linearGradient>
+    <!-- Hero peak, shadow face -->
+    <linearGradient id="shade" x1="60" y1="60" x2="130" y2="190" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6C2EA8"/>
+      <stop offset="1" stop-color="#3C1A6E"/>
+    </linearGradient>
+    <linearGradient id="snow" x1="128" y1="40" x2="140" y2="120" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#D7C7F2"/>
+    </linearGradient>
+    <!-- Cool back ranges -->
+    <linearGradient id="far" x1="128" y1="70" x2="128" y2="190" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#B57CE0"/>
+      <stop offset="1" stop-color="#7E48C6"/>
+    </linearGradient>
+    <linearGradient id="mid" x1="128" y1="90" x2="128" y2="195" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7E3CC0"/>
+      <stop offset="1" stop-color="#4E2495"/>
+    </linearGradient>
+    <linearGradient id="lake" x1="128" y1="196" x2="128" y2="232" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#2DD4BF"/>
+      <stop offset="1" stop-color="#0E7490"/>
+    </linearGradient>
+    <clipPath id="disc"><circle cx="128" cy="128" r="124"/></clipPath>
+  </defs>
+
+  <!-- Disc -->
+  <g clip-path="url(#disc)">
+    <rect x="0" y="0" width="256" height="256" fill="url(#sky)"/>
+    <circle cx="150" cy="96" r="40" fill="url(#sun)"/>
+
+    <!-- Far range -->
+    <path d="M-10 196 L52 104 L104 196 Z" fill="url(#far)" opacity="0.85"/>
+    <path d="M150 196 L210 110 L276 196 Z" fill="url(#far)" opacity="0.85"/>
+    <!-- Mid range -->
+    <path d="M-10 200 L74 120 L150 200 Z" fill="url(#mid)" opacity="0.92"/>
+    <path d="M120 200 L188 132 L276 200 Z" fill="url(#mid)" opacity="0.92"/>
+
+    <!-- Hero peak: faceted (lit + shadow) -->
+    <path d="M138 46 L204 200 L118 200 Z" fill="url(#shade)"/>
+    <path d="M138 46 L204 200 L118 200 L138 46 Z" fill="url(#lit)" opacity="0"/>
+    <path d="M138 46 L118 200 L72 200 Z" fill="url(#shade)"/>
+    <path d="M138 46 L204 200 L118 200 Z" fill="url(#lit)"/>
+
+    <!-- Snow cap with jagged base -->
+    <path d="M138 46 L158 96 L150 90 L143 99 L136 88 L128 97 L121 87 L119 96 Z" fill="url(#snow)"/>
+
+    <!-- Lake / reflection band -->
+    <rect x="0" y="200" width="256" height="56" fill="url(#lake)"/>
+    <path d="M72 200 L118 200 L138 222 L100 222 Z" fill="#FFFFFF" opacity="0.18"/>
+  </g>
+
+  <!-- Inner rim for crisp circle edge -->
+  <circle cx="128" cy="128" r="124" fill="none" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="3"/>
+</svg>

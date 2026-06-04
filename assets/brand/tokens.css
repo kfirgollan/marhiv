@@ -1,0 +1,43 @@
+/*
+ * Marhiv design tokens — the alpenglow palette as CSS custom properties.
+ * Import where the extension UI (popup, options) is styled. See BRAND.md.
+ * Apache-2.0.
+ */
+:root {
+  /* Core palette */
+  --marhiv-summit-indigo: #3a1378;
+  --marhiv-twilight-violet: #7a2bb4; /* primary */
+  --marhiv-aurora-magenta: #c42c9e;
+  --marhiv-alpenglow-coral: #fb6f57;
+  --marhiv-sunlit-amber: #ffc24b;
+  --marhiv-glacier-teal: #2dd4bf;
+  --marhiv-sky-cyan: #38bdf8;
+  --marhiv-snow: #f8faff;
+  --marhiv-peak-shadow: #371765;
+  --marhiv-ink: #1a1033;
+
+  /* Violet-tinted neutrals */
+  --marhiv-canvas: #160a2e;
+  --marhiv-surface: #2a1052;
+  --marhiv-text-muted: #c9b8e8;
+  --marhiv-hairline: #e9e1f7;
+
+  /* Semantic roles */
+  --marhiv-primary: var(--marhiv-twilight-violet);
+  --marhiv-accent: var(--marhiv-aurora-magenta);
+  --marhiv-cta: var(--marhiv-alpenglow-coral);
+  --marhiv-success: var(--marhiv-glacier-teal);
+  --marhiv-info: var(--marhiv-sky-cyan);
+
+  /* Signature gradients */
+  --marhiv-gradient-alpenglow: linear-gradient(
+    180deg,
+    #3a1378 0%,
+    #7a2bb4 34%,
+    #c42c9e 58%,
+    #fb6f57 80%,
+    #ffc24b 100%
+  );
+  --marhiv-gradient-wordmark: linear-gradient(90deg, #7a2bb4 0%, #c42c9e 50%, #fb6f57 100%);
+  --marhiv-gradient-glacier: linear-gradient(180deg, #2dd4bf 0%, #0e7490 100%);
+}

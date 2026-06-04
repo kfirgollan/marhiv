@@ -1,0 +1,60 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Marhiv — make the AI chatbots you use your own">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#160A2E"/>
+      <stop offset="1" stop-color="#2A1052"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#C42C9E" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#C42C9E" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ssky" x1="600" y1="150" x2="600" y2="470" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3A1378"/>
+      <stop offset="0.36" stop-color="#7A2BB4"/>
+      <stop offset="0.62" stop-color="#C42C9E"/>
+      <stop offset="0.83" stop-color="#FB6F57"/>
+      <stop offset="1" stop-color="#FFC24B"/>
+    </linearGradient>
+    <radialGradient id="ssun" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFF7DC"/><stop offset="0.5" stop-color="#FFD46A"/>
+      <stop offset="1" stop-color="#FFB23E" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="slit" x1="585" y1="195" x2="660" y2="320" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFB37A"/><stop offset="1" stop-color="#F0567E"/>
+    </linearGradient>
+    <linearGradient id="sshade" x1="530" y1="200" x2="600" y2="320" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6C2EA8"/><stop offset="1" stop-color="#371765"/>
+    </linearGradient>
+    <linearGradient id="sback" x1="600" y1="240" x2="600" y2="320" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#9A5AD6"/><stop offset="1" stop-color="#5B2BA0"/>
+    </linearGradient>
+    <linearGradient id="ssnow" x1="600" y1="185" x2="606" y2="250" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#DCCFF5"/>
+    </linearGradient>
+    <linearGradient id="stext" x1="430" y1="380" x2="770" y2="470" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#B57CE0"/>
+      <stop offset="0.5" stop-color="#EC4899"/>
+      <stop offset="1" stop-color="#FB6F57"/>
+    </linearGradient>
+    <clipPath id="sdisc"><circle cx="600" cy="320" r="130"/></clipPath>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- Mark -->
+  <g clip-path="url(#sdisc)">
+    <rect x="470" y="190" width="260" height="260" fill="url(#ssky)"/>
+    <circle cx="680" cy="280" r="38" fill="url(#ssun)"/>
+    <path d="M472 450 L548 340 L628 450 Z" fill="url(#sback)" opacity="0.9"/>
+    <path d="M600 196 L706 450 L585 450 Z" fill="url(#slit)"/>
+    <path d="M600 196 L585 450 L512 450 Z" fill="url(#sshade)"/>
+    <path d="M600 196 L626 264 L616 256 L607 268 L598 254 L589 266 L580 255 L575 264 Z" fill="url(#ssnow)"/>
+  </g>
+  <circle cx="600" cy="320" r="130" fill="none" stroke="#FFFFFF" stroke-opacity="0.18" stroke-width="3"/>
+
+  <!-- Wordmark -->
+  <text x="600" y="540" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="92" font-weight="800" letter-spacing="-3" fill="url(#stext)">Marhiv</text>
+  <!-- Tagline -->
+  <text x="600" y="585" text-anchor="middle" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="26" font-weight="500" letter-spacing="0.5" fill="#C9B8E8">Make the AI chatbots you use your own.</text>
+</svg>

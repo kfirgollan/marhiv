@@ -1,0 +1,52 @@
+<svg width="760" height="200" viewBox="0 0 760 200" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Marhiv">
+  <defs>
+    <linearGradient id="wsky" x1="100" y1="20" x2="100" y2="180" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3A1378"/>
+      <stop offset="0.36" stop-color="#7A2BB4"/>
+      <stop offset="0.62" stop-color="#C42C9E"/>
+      <stop offset="0.83" stop-color="#FB6F57"/>
+      <stop offset="1" stop-color="#FFC24B"/>
+    </linearGradient>
+    <radialGradient id="wsun" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFF7DC"/>
+      <stop offset="0.5" stop-color="#FFD46A"/>
+      <stop offset="1" stop-color="#FFB23E" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="wlit" x1="95" y1="48" x2="160" y2="150" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFB37A"/>
+      <stop offset="1" stop-color="#F0567E"/>
+    </linearGradient>
+    <linearGradient id="wshade" x1="50" y1="55" x2="100" y2="150" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6C2EA8"/>
+      <stop offset="1" stop-color="#371765"/>
+    </linearGradient>
+    <linearGradient id="wback" x1="100" y1="80" x2="100" y2="150" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#9A5AD6"/>
+      <stop offset="1" stop-color="#5B2BA0"/>
+    </linearGradient>
+    <linearGradient id="wsnow" x1="100" y1="38" x2="106" y2="92" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#DCCFF5"/>
+    </linearGradient>
+    <linearGradient id="wtext" x1="250" y1="60" x2="720" y2="140" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7A2BB4"/>
+      <stop offset="0.5" stop-color="#C42C9E"/>
+      <stop offset="1" stop-color="#FB6F57"/>
+    </linearGradient>
+    <clipPath id="wdisc"><circle cx="100" cy="100" r="78"/></clipPath>
+  </defs>
+
+  <!-- Mark -->
+  <g clip-path="url(#wdisc)">
+    <rect x="22" y="22" width="156" height="156" fill="url(#wsky)"/>
+    <circle cx="148" cy="78" r="22" fill="url(#wsun)"/>
+    <path d="M24 156 L70 94 L118 156 Z" fill="url(#wback)" opacity="0.9"/>
+    <path d="M100 50 L164 156 L91 156 Z" fill="url(#wlit)"/>
+    <path d="M100 50 L91 156 L46 156 Z" fill="url(#wshade)"/>
+    <path d="M100 50 L116 92 L110 87 L104 95 L98 86 L92 94 L86 87 L83 92 Z" fill="url(#wsnow)"/>
+  </g>
+  <circle cx="100" cy="100" r="78" fill="none" stroke="#FFFFFF" stroke-opacity="0.18" stroke-width="2"/>
+
+  <!-- Wordmark -->
+  <text x="214" y="132" font-family="'Inter','Helvetica Neue',Arial,sans-serif" font-size="104" font-weight="800" letter-spacing="-3" fill="url(#wtext)">Marhiv</text>
+</svg>

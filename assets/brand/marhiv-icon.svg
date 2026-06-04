@@ -1,0 +1,50 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Marhiv">
+  <defs>
+    <linearGradient id="isky" x1="128" y1="0" x2="128" y2="256" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3A1378"/>
+      <stop offset="0.36" stop-color="#7A2BB4"/>
+      <stop offset="0.62" stop-color="#C42C9E"/>
+      <stop offset="0.83" stop-color="#FB6F57"/>
+      <stop offset="1" stop-color="#FFC24B"/>
+    </linearGradient>
+    <radialGradient id="isun" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFF7DC"/>
+      <stop offset="0.5" stop-color="#FFD46A"/>
+      <stop offset="1" stop-color="#FFB23E" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ilit" x1="120" y1="44" x2="230" y2="210" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFB37A"/>
+      <stop offset="1" stop-color="#F0567E"/>
+    </linearGradient>
+    <linearGradient id="ishade" x1="40" y1="60" x2="128" y2="214" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6C2EA8"/>
+      <stop offset="1" stop-color="#371765"/>
+    </linearGradient>
+    <linearGradient id="iback" x1="128" y1="96" x2="128" y2="214" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#9A5AD6"/>
+      <stop offset="1" stop-color="#5B2BA0"/>
+    </linearGradient>
+    <linearGradient id="isnow" x1="128" y1="40" x2="138" y2="126" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#DCCFF5"/>
+    </linearGradient>
+    <clipPath id="idisc"><circle cx="128" cy="128" r="124"/></clipPath>
+  </defs>
+
+  <g clip-path="url(#idisc)">
+    <rect width="256" height="256" fill="url(#isky)"/>
+    <circle cx="176" cy="92" r="34" fill="url(#isun)"/>
+
+    <!-- single supporting back peak for depth -->
+    <path d="M2 214 L74 116 L150 214 Z" fill="url(#iback)" opacity="0.9"/>
+
+    <!-- hero peak, faceted -->
+    <path d="M128 44 L228 214 L112 214 Z" fill="url(#ilit)"/>
+    <path d="M128 44 L112 214 L40 214 Z" fill="url(#ishade)"/>
+
+    <!-- bold snow cap -->
+    <path d="M128 44 L154 110 L144 102 L135 114 L126 100 L116 113 L107 101 L102 110 Z" fill="url(#isnow)"/>
+  </g>
+
+  <circle cx="128" cy="128" r="124" fill="none" stroke="#FFFFFF" stroke-opacity="0.18" stroke-width="3"/>
+</svg>
