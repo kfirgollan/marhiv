@@ -85,6 +85,7 @@
 }
 
 .marhiv-menuitem {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -127,6 +128,36 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+/*
+ * Collapsed-mode tooltip: the label, revealed beside the icon on hover/focus.
+ * Rendered only when the menu is collapsed (see PanelMenuItem.tsx). Sits to the
+ * right of the rail, over the page content, and ignores the pointer so it can't
+ * flicker or block clicks.
+ */
+.marhiv-menuitem__tooltip {
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 50%;
+  z-index: 2;
+  transform: translateY(-50%);
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--marhiv-hairline);
+  background: var(--marhiv-surface);
+  color: var(--marhiv-snow);
+  font-size: 12px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  transition: opacity 100ms ease;
+}
+
+.marhiv-menuitem:hover .marhiv-menuitem__tooltip,
+.marhiv-menuitem:focus-visible .marhiv-menuitem__tooltip {
+  opacity: 1;
 }
 
 /* Content side — frames the active Panel Page. */

@@ -30,13 +30,19 @@ export function PanelMenuItem({
       onClick={onSelect}
       aria-label={label}
       aria-current={active ? 'page' : undefined}
-      // The label is hidden when collapsed, so surface it as a tooltip instead.
-      title={collapsed ? label : undefined}
     >
       <span className="marhiv-menuitem__icon" aria-hidden="true">
         {icon}
       </span>
-      {!collapsed && <span className="marhiv-menuitem__label">{label}</span>}
+      {collapsed ? (
+        // Collapsed hides the inline label, so reveal it as a styled tooltip
+        // beside the item on hover/focus (see panel.css).
+        <span className="marhiv-menuitem__tooltip" role="tooltip">
+          {label}
+        </span>
+      ) : (
+        <span className="marhiv-menuitem__label">{label}</span>
+      )}
     </button>
   )
 }
