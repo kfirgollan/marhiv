@@ -24,6 +24,9 @@ export interface PluginMeta {
   matches: string[]
   // Whether a fresh install starts with this plugin enabled. Defaults to false.
   defaultEnabled?: boolean
+  // Optional grouping label (e.g. 'Theme', 'Developer'). Surfaced in the Plugins
+  // page — but only where there's room (the maximized, full-page view).
+  category?: string
 }
 
 // The app's reactive stores, lent to a Plugin so its UI can read live state

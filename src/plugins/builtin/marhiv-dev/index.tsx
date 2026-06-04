@@ -17,6 +17,7 @@ export const marhivDev: Plugin = {
     description: 'Adds a Dev page with live internal state and a debug state export.',
     matches: ['https://claude.ai/*'],
     defaultEnabled: true,
+    category: 'Developer',
   },
   onLoad(ctx) {
     ctx.registerPage({

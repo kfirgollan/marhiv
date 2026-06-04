@@ -21,6 +21,7 @@ export const claudeCodeEnhancer: Plugin = {
     description: 'Adds Marhiv actions to the Claude Code UI (claude.ai/code).',
     matches: ['https://claude.ai/*'],
     defaultEnabled: true,
+    category: 'Enhancement',
   },
   onLoad(ctx) {
     ctx.onRoute(RouteKey.Code, ({ slot }) => {

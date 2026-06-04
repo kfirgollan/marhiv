@@ -112,6 +112,7 @@ export function createClaudeTheme(palette: ClaudeThemePalette): Plugin {
     description: palette.description,
     matches: palette.matches ?? ['https://claude.ai/*'],
     defaultEnabled: palette.defaultEnabled ?? false,
+    category: 'Theme',
   }
   const css = buildThemeCss(palette)
   return {

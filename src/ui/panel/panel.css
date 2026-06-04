@@ -372,8 +372,11 @@
   text-overflow: ellipsis;
 }
 
-/* Search box — e.g. the Plugins page's filter. */
+/* Search box — e.g. the Plugins page's filter. Fixed height so the sticky
+   toolbar that holds it has a known, stable height (see --marhiv-plugins-bar-h). */
 .marhiv-search {
+  width: 100%;
+  height: 31px;
   font: inherit;
   color: var(--marhiv-snow);
   background: var(--marhiv-surface);
@@ -386,6 +389,30 @@
   color: var(--marhiv-text-muted);
 }
 
+/*
+ * Plugins page: a frozen search toolbar and column header (like a spreadsheet's
+ * frozen rows) so both stay visible while the plugin list scrolls. The body's
+ * top padding is dropped here so scrolled rows can't peek above the toolbar —
+ * the toolbar's own padding supplies the top spacing instead.
+ */
+.marhiv-page__body:has(> .marhiv-plugins) {
+  padding-top: 0;
+}
+
+.marhiv-plugins {
+  /* The sticky column header pins exactly below the toolbar; keep equal to the
+     toolbar height = search height (31) + toolbar padding (12 + 9). */
+  --marhiv-plugins-bar-h: 52px;
+}
+
+.marhiv-plugins__bar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 12px 0 9px;
+  background: var(--marhiv-canvas);
+}
+
 /* Plugins table — a row per plugin with a name/description cell and a toggle. */
 .marhiv-table {
   width: 100%;
@@ -393,7 +420,13 @@
 }
 
 .marhiv-table th {
-  padding: 0 0 6px;
+  /* Frozen below the sticky search toolbar; the background hides rows scrolling
+     beneath it. (Var inherits from .marhiv-plugins; 0 if used outside it.) */
+  position: sticky;
+  top: var(--marhiv-plugins-bar-h, 0);
+  z-index: 1;
+  padding: 6px 0;
+  background: var(--marhiv-canvas);
   border-bottom: 1px solid var(--marhiv-hairline);
   text-align: left;
   font-size: 11px;
@@ -430,6 +463,17 @@
   padding: 12px 0;
   color: var(--marhiv-text-muted);
   text-align: left;
+}
+
+/* Small pill, e.g. a plugin's category in the Plugins table's full-page view. */
+.marhiv-tag {
+  display: inline-block;
+  padding: 1px 8px;
+  border: 1px solid var(--marhiv-hairline);
+  border-radius: 999px;
+  font-size: 10px;
+  color: var(--marhiv-text-muted);
+  white-space: nowrap;
 }
 
 /* Toggle switch — a checkbox restyled as an on/off slider. */
