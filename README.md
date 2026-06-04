@@ -66,7 +66,16 @@ npm run format       # prettier --write
 npm run typecheck    # tsc --noEmit
 ```
 
-A **Husky** pre-commit hook runs `typecheck` and, via **lint-staged**, ESLint + Prettier on staged files — so commits stay clean automatically. The hook installs itself on `npm install`.
+Duplication is detected with **jscpd**:
+
+```bash
+npm run check:dup    # fails if any copy-paste clones are found
+```
+
+**Git hooks** (via Husky, installed automatically on `npm install`):
+
+- **pre-commit** — `typecheck` + `lint-staged` (ESLint + Prettier on staged files).
+- **pre-push** — `check:dup` (jscpd), blocking pushes that introduce duplicated code.
 
 ## Contributing
 

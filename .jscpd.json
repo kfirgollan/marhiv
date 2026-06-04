@@ -1,0 +1,8 @@
+{
+  "threshold": 0,
+  "gitignore": true,
+  "absolute": true,
+  "reporters": ["console"],
+  "ignore": ["**/node_modules/**", "dist/**", "**/*.json"],
+  "path": ["src", "manifest.config.ts", "vite.config.ts", "eslint.config.js"]
+}

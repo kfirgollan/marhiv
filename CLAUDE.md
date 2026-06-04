@@ -2,6 +2,14 @@
 
 Guidance for Claude Code (and other agents) working in this repository.
 
+## Taxonomy
+
+`docs/taxonomy.md` is the project's shared vocabulary — the canonical, precise
+meaning of each component or concept (Plugin, Userscript, Registry, Enhancement
+API, …). Consult it when a term is ambiguous, and use registered terms exactly
+as defined in code, docs, commits, and conversation. Register or refine terms
+with the `/register-term` skill rather than editing the file by hand.
+
 ## What Marhiv is
 
 **Marhiv** (Hebrew מרהיב, "spectacular") is a **Chromium browser extension (Manifest V3)** that enhances the experience of using online AI chatbots. The mental model is **Tampermonkey × Oh My Zsh, geared toward AI tools**: a framework for layering enhancements onto AI chat sites (ChatGPT, Claude, Gemini, …) so users can make those tools their own.
@@ -40,7 +48,8 @@ The chosen stack. Honor it unless the user redirects:
 - **Lint:** ESLint flat config (`eslint.config.js`) — `npm run lint` / `lint:fix`.
 - **Format:** Prettier (`.prettierrc.json`) — `npm run format` / `format:check`. No semicolons, single quotes.
 - **Types:** `npm run typecheck` (`tsc --noEmit`).
-- **Pre-commit:** a Husky hook (`.husky/pre-commit`) runs `typecheck` then `lint-staged` (ESLint + Prettier on staged files). Keep code lint-clean; don't bypass the hook with `--no-verify` without good reason.
+- **Duplication:** jscpd (`.jscpd.json`, threshold 0) — `npm run check:dup`. Scans `src/` and the root config files. Fix clones by extracting shared code, not by raising the threshold.
+- **Git hooks (Husky):** `.husky/pre-commit` runs `typecheck` + `lint-staged` (ESLint + Prettier on staged files); `.husky/pre-push` runs `check:dup`. Keep code clean; don't bypass hooks with `--no-verify` without good reason.
 
 ## Anticipated architecture
 
