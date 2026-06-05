@@ -15,13 +15,15 @@
 import {
   BODY_CAP,
   NET_CONTROL,
+  NET_FETCH,
+  NET_FETCH_RESULT,
   NET_MESSAGE,
   NET_ORG,
   NET_ORG_REQUEST,
   ORG_ID_RE,
-  type NetControlMessage,
+  type NetFetchMessage,
+  type NetFetchResultMessage,
   type NetOrgMessage,
-  type NetOrgRequestMessage,
   type NetworkMessage,
 } from './net-protocol'
 
@@ -39,16 +41,43 @@ function noteOrg(url: string): void {
   window.postMessage(message, location.origin)
 }
 
+// Perform a GET in the page's own world and relay the result back, so the
+// isolated caller gets exactly the auth (cookies + any app fetch-wrapper headers)
+// the page itself would send. Uses the CURRENT window.fetch, so an app-level
+// wrapper still applies; never throws — failures come back as `error`.
+function handleProxyFetch(id: string, url: string): void {
+  const reply = (result: Omit<NetFetchResultMessage, 'source' | 'id'>): void => {
+    const message: NetFetchResultMessage = { source: NET_FETCH_RESULT, id, ...result }
+    window.postMessage(message, location.origin)
+  }
+  let absolute: string
+  try {
+    absolute = new URL(url, location.href).href
+  } catch {
+    reply({ ok: false, status: 0, body: '', error: 'invalid url' })
+    return
+  }
+  void window
+    .fetch(absolute, { credentials: 'include', headers: { accept: 'application/json' } })
+    .then(async (res) => reply({ ok: res.ok, status: res.status, body: await res.text() }))
+    .catch((err: unknown) => reply({ ok: false, status: 0, body: '', error: String(err) }))
+}
+
 // Listen for control messages from the isolated world. Guard on `event.source ===
 // window` so we only honor messages from this same window (both worlds share it).
 window.addEventListener('message', (event: MessageEvent) => {
   if (event.source !== window) return
-  const data = event.data as Partial<NetControlMessage> | Partial<NetOrgRequestMessage> | null
-  if (data?.source === NET_CONTROL) recording = (data as NetControlMessage).recording === true
+  const data = event.data as { source?: unknown; recording?: unknown } | null
+  if (data?.source === NET_CONTROL) recording = data.recording === true
   // Answer a request for the sniffed org id, if we've seen one.
   if (data?.source === NET_ORG_REQUEST && orgId) {
     const message: NetOrgMessage = { source: NET_ORG, orgId }
     window.postMessage(message, location.origin)
+  }
+  // Run a first-party GET on the caller's behalf.
+  if (data?.source === NET_FETCH) {
+    const m = data as unknown as NetFetchMessage
+    handleProxyFetch(m.id, m.url)
   }
 })
 

@@ -5,25 +5,54 @@
 // native UI only exposes them buried inside a routine's Edit modal — this client
 // fetches the same data the page does, so Marhiv can list environments up front.
 //
-// Requests go to claude.ai with `credentials: 'include'` so the page's auth
-// cookies ride along (the extension declares claude.ai in host_permissions, which
-// makes these first-party). This module only READS — editing is done by driving
-// Claude's own native editor (see drive.ts).
+// Requests are made FROM THE PAGE'S OWN WORLD via the MAIN-world bridge (see
+// net-protocol's fetch proxy), so they carry exactly the auth the page itself
+// sends. A plain content-script fetch to these endpoints comes back 404 — it
+// doesn't go out first-party — which is why we proxy instead. This module only
+// READS; editing is done by driving Claude's own native editor (see drive.ts).
 
 import {
+  NET_FETCH,
+  NET_FETCH_RESULT,
   NET_ORG,
   NET_ORG_REQUEST,
+  type NetFetchMessage,
+  type NetFetchResultMessage,
   type NetOrgMessage,
   type NetOrgRequestMessage,
 } from '../../../../content/net-protocol'
 
-async function getJson<T>(path: string): Promise<T> {
-  const res = await fetch(`${location.origin}${path}`, {
-    credentials: 'include',
-    headers: { accept: 'application/json' },
+// A counter for correlating proxy requests with their replies; unique per page.
+let fetchSeq = 0
+
+// Ask the MAIN-world bridge to GET `path` first-party and return the parsed JSON.
+async function getJson<T>(path: string, timeoutMs = 8000): Promise<T> {
+  const id = `env-${(fetchSeq += 1)}`
+  const result = await new Promise<NetFetchResultMessage>((resolve, reject) => {
+    const onMessage = (event: MessageEvent): void => {
+      if (event.source !== window) return
+      const data = event.data as Partial<NetFetchResultMessage> | null
+      if (data?.source === NET_FETCH_RESULT && data.id === id) {
+        cleanup()
+        resolve(data as NetFetchResultMessage)
+      }
+    }
+    const cleanup = (): void => {
+      window.removeEventListener('message', onMessage)
+      clearTimeout(timer)
+    }
+    const timer = setTimeout(() => {
+      cleanup()
+      reject(new Error(`${path} → no response from bridge`))
+    }, timeoutMs)
+    window.addEventListener('message', onMessage)
+    const request: NetFetchMessage = { source: NET_FETCH, id, url: `${location.origin}${path}` }
+    window.postMessage(request, location.origin)
   })
-  if (!res.ok) throw new Error(`${path} → HTTP ${res.status}`)
-  return res.json() as Promise<T>
+
+  if (result.error) throw new Error(`${path} → ${result.error}`)
+  if (!result.ok) throw new Error(`${path} → HTTP ${result.status}`)
+  return JSON.parse(result.body) as T
 }
 
 // The org uuid claude.ai last scoped to, from its cookie. The value can be
@@ -105,22 +134,4 @@ export async function fetchEnvironments(): Promise<EnvironmentSummary[]> {
     `/v1/environment_providers/private/organizations/${org}/environments`,
   )
   return data.environments ?? []
-}
-
-// One routine trigger (the subset we need to navigate to its detail page).
-export interface RoutineSummary {
-  id: string
-  name: string
-}
-
-interface TriggersResponse {
-  data: RoutineSummary[]
-}
-
-// The first routine in the org, used purely as the "vehicle" whose Edit modal
-// hosts the environment editor. Returns null when the org has no routines (then
-// there's no native path to the editor at all).
-export async function fetchFirstRoutine(): Promise<RoutineSummary | null> {
-  const data = await getJson<TriggersResponse>('/v1/code/triggers?limit=100')
-  return data.data?.[0] ?? null
 }

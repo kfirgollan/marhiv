@@ -11,8 +11,6 @@
 // role, visible text) — never hashed ids or Tailwind classes — and each step
 // fails loudly via a toast naming where it broke, so breakage is diagnosable.
 
-import type { RoutineSummary } from './api'
-
 // Stable host anchors, gathered from a recording of the manual path.
 const SEL = {
   sidebar: 'aside[aria-label="Sidebar"]',
@@ -86,11 +84,14 @@ function sidebarButton(label: string): HTMLElement | null {
   return null
 }
 
-// A routine row on the list page, matched by the routine's name.
-function findRoutineRow(name: string): HTMLElement | null {
+// Any routine row on the list page — every routine shows a "Next run …" line, so
+// that's a stable-enough signal to grab the first one as the editor "vehicle".
+// We don't care WHICH routine: it's only used to open its Edit modal, where the
+// environment editor lives.
+function findFirstRoutineRow(): HTMLElement | null {
   const main = document.getElementById('dframe-main') ?? document.body
   for (const button of main.querySelectorAll<HTMLElement>('button')) {
-    if (button.textContent?.includes(name)) return button
+    if (/Next run/i.test(button.textContent ?? '')) return button
   }
   return null
 }
@@ -98,10 +99,7 @@ function findRoutineRow(name: string): HTMLElement | null {
 // Get a routine-edit modal open, from wherever the user currently is: reuse an
 // open one, click Edit on a routine detail page, or navigate (in-SPA, by
 // clicking) to a routine first.
-async function ensureRoutineDialog(
-  routine: RoutineSummary,
-  signal: AbortSignal,
-): Promise<HTMLElement> {
+async function ensureRoutineDialog(signal: AbortSignal): Promise<HTMLElement> {
   const existing = openRoutineDialog()
   if (existing) return existing
 
@@ -113,7 +111,7 @@ async function ensureRoutineDialog(
       if (!routines) throw new DriveError('open the Routines section')
       routines.click()
     }
-    const row = await waitFor(() => findRoutineRow(routine.name), signal).catch(() => {
+    const row = await waitFor(findFirstRoutineRow, signal).catch(() => {
       throw new DriveError('find a routine to open')
     })
     row.click()
@@ -139,12 +137,8 @@ class DriveError extends Error {
 }
 
 // Drive all the way to the chosen environment's native editor.
-export async function openEnvironmentEditor(
-  envName: string,
-  routine: RoutineSummary,
-  signal: AbortSignal,
-): Promise<void> {
-  const dialog = await ensureRoutineDialog(routine, signal)
+export async function openEnvironmentEditor(envName: string, signal: AbortSignal): Promise<void> {
+  const dialog = await ensureRoutineDialog(signal)
 
   const envButton = dialog.querySelector<HTMLElement>(SEL.envButton)
   if (!envButton) throw new DriveError('find the Environment dropdown')

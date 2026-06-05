@@ -9,12 +9,7 @@
 
 import { Slot } from '../../../../enhance/slots'
 import type { RouteScope } from '../../../types'
-import {
-  fetchEnvironments,
-  fetchFirstRoutine,
-  type EnvironmentSummary,
-  type RoutineSummary,
-} from './api'
+import { fetchEnvironments, type EnvironmentSummary } from './api'
 import { openEnvMenu, showToast } from './menu'
 import { DriveError, openEnvironmentEditor } from './drive'
 import { log } from '../../../../log'
@@ -37,15 +32,14 @@ export function addEnvironmentsShortcut({ slot, signal }: RouteScope): void {
   })
 }
 
-// Fetch the org's environments + a vehicle routine, then show the picker menu.
+// Fetch the org's environments, then show the picker menu.
 async function openPicker(signal: AbortSignal): Promise<void> {
   const anchor = document.querySelector(`[data-marhiv-slot-action="${ACTION_ID}"]`)
   const toast = showToast('Loading environments…', signal)
 
   let environments: EnvironmentSummary[]
-  let routine: RoutineSummary | null
   try {
-    ;[environments, routine] = await Promise.all([fetchEnvironments(), fetchFirstRoutine()])
+    environments = await fetchEnvironments()
   } catch (err) {
     // Logged (not just toasted) so a dev recording / the diagnostics export
     // captures the exact failing URL.
@@ -55,29 +49,20 @@ async function openPicker(signal: AbortSignal): Promise<void> {
   }
   toast.dismiss()
 
-  if (!routine) {
-    showToast('No routines exist to open the environment editor from.', signal)
-    return
-  }
-
   openEnvMenu(
     anchor,
     environments.map((env) => ({ id: env.environment_id, name: env.name })),
-    (item) => void driveToEditor(item.name, routine, signal),
+    (item) => void driveToEditor(item.name, signal),
     signal,
   )
 }
 
 // Drive the native editor open for the picked environment, reporting where it
 // breaks if a host step can't be found.
-async function driveToEditor(
-  envName: string,
-  routine: RoutineSummary,
-  signal: AbortSignal,
-): Promise<void> {
+async function driveToEditor(envName: string, signal: AbortSignal): Promise<void> {
   const toast = showToast(`Opening "${envName}"…`, signal)
   try {
-    await openEnvironmentEditor(envName, routine, signal)
+    await openEnvironmentEditor(envName, signal)
     toast.dismiss()
   } catch (err) {
     if (err instanceof DriveError) toast.update(`Couldn't ${err.step}.`)

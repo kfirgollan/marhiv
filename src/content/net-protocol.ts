@@ -61,3 +61,28 @@ export interface NetOrgMessage {
 export interface NetOrgRequestMessage {
   source: typeof NET_ORG_REQUEST
 }
+
+// First-party GET proxy. An isolated-world plugin can't reliably make
+// authenticated calls to Claude's API — a content-script fetch may reach the
+// server without the page's auth and come back 404. The bridge runs in the
+// page's own world, so the isolated side asks IT to perform the GET (picking up
+// exactly the cookies/headers the page itself sends) and relays the result back,
+// correlated by `id`.
+export const NET_FETCH = 'marhiv:net-fetch'
+export const NET_FETCH_RESULT = 'marhiv:net-fetch-result'
+
+export interface NetFetchMessage {
+  source: typeof NET_FETCH
+  id: string
+  url: string
+}
+
+export interface NetFetchResultMessage {
+  source: typeof NET_FETCH_RESULT
+  id: string
+  ok: boolean
+  status: number
+  body: string
+  // Set when the request threw (network error) rather than returning a response.
+  error?: string
+}
