@@ -6,6 +6,7 @@
 
 import { usePanelPages } from '../store/panelPages'
 import { useRouteStore } from '../store/route'
+import { usePanelMaximized } from '../store/panel'
 import { createSlotHandle, type SiteEnhancements } from '../enhance/slots'
 import type { PluginContext } from './types'
 
@@ -42,6 +43,7 @@ export function createPluginContext(
     },
     stores: {
       route: useRouteStore,
+      panelMaximized: usePanelMaximized,
     },
     onRoute(route, handler) {
       // A mini-router for one route name, driven by the active routes the

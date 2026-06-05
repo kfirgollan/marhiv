@@ -4,15 +4,14 @@
 // Slots engine rather than raw selectors — so when Claude reworks its markup,
 // only the slot resolver in src/sites/claude/slots.ts changes, not this plugin.
 //
-// First behavior: add a "marhiv test button" row directly under the sidebar's
-// "+ New session" entry. The Slots engine inserts it natively (cloning the host
-// row's styling), keeps it present across re-renders, and removes it when the
-// route is left or the plugin is disabled — all via the route scope's signal,
-// so there's nothing to undo in `onUnload`.
+// Capabilities (each bundled in; this plugin has a single on/off):
+//   - Environments shortcut: an "Environments" row under the sidebar's "New
+//     session" that jumps straight to a routine environment's native editor,
+//     skipping the six-step native path (see ./environments).
 
-import { Slot } from '../../../enhance/slots'
 import { RouteKey } from '../../../sites/claude/routes'
 import type { Plugin } from '../../types'
+import { addEnvironmentsShortcut } from './environments'
 
 export const claudeCodeEnhancer: Plugin = {
   meta: {
@@ -24,12 +23,8 @@ export const claudeCodeEnhancer: Plugin = {
     category: 'Enhancement',
   },
   onLoad(ctx) {
-    ctx.onRoute(RouteKey.Code, ({ slot }) => {
-      slot(Slot.SidebarNewSession).addAction({
-        id: 'marhiv-test-button',
-        label: 'marhiv test button',
-        onClick: () => console.info('[marhiv] test button clicked'),
-      })
+    ctx.onRoute(RouteKey.Code, (scope) => {
+      addEnvironmentsShortcut(scope)
     })
   },
 }

@@ -51,8 +51,9 @@ export interface SiteEnhancements {
 
 // Resolve a slot to its current element, walking parents top-down so each level
 // is scoped to the one above it. Returns null if the slot or any ancestor is
-// absent.
-function resolveSlot(registry: SlotRegistry, key: SlotKey): Element | null {
+// absent. Exported so diagnostics (the marhiv-dev recorder) can build a live
+// slot → element map without re-implementing the walk.
+export function resolveSlot(registry: SlotRegistry, key: SlotKey): Element | null {
   const def = registry[key]
   if (!def) return null
   const scope: ParentNode | null = def.parent ? resolveSlot(registry, def.parent) : document
@@ -112,6 +113,10 @@ export interface SlotAction {
   // can't duplicate the item.
   readonly id: string
   readonly label: string
+  // Optional inline SVG markup for the leading-icon slot, so the item matches the
+  // host rows that carry an icon. Must be a trusted, plugin-authored constant
+  // (it's assigned as innerHTML) — never untrusted input.
+  readonly icon?: string
   onClick(): void
 }
 
@@ -148,6 +153,8 @@ export function createSlotHandle(
         button.setAttribute(SLOT_ACTION_ATTR, action.id)
         const lead = document.createElement('span')
         lead.className = 'df-leading-slot'
+        // Trusted, plugin-authored SVG constant (see SlotAction.icon).
+        if (action.icon) lead.innerHTML = action.icon
         const label = document.createElement('span')
         label.textContent = action.label
         button.append(lead, label)

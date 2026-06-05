@@ -10,6 +10,7 @@
 
 import type { PanelPageDef } from '../ui/panel/pages'
 import type { useRouteStore } from '../store/route'
+import type { usePanelMaximized } from '../store/panel'
 import type { SlotHandle, SlotKey } from '../enhance/slots'
 
 export interface PluginMeta {
@@ -36,6 +37,9 @@ export interface PluginMeta {
 export interface PluginStores {
   // Ephemeral routing state — the path the Router last detected.
   route: typeof useRouteStore
+  // The settings Panel's maximized flag, so a plugin's page can adapt its content
+  // to the Panel's size mode (mini, anchored vs. maximized, full-page).
+  panelMaximized: typeof usePanelMaximized
 }
 
 // What a route-scoped handler receives. It mirrors the Router's RouteContext:

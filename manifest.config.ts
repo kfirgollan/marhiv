@@ -28,6 +28,10 @@ export default defineManifest({
   // `storage` lets the indicator persist its position across page loads and
   // share it between every page Marhiv runs on.
   permissions: ['storage'],
+  // Lets plugins make first-party (cookie-authenticated) requests to Claude's API
+  // from the content script — e.g. the Environments shortcut listing the org's
+  // environments. Without it, those same-origin fetches can go out unauthenticated.
+  host_permissions: ['https://claude.ai/*'],
   content_scripts: [
     {
       // Navigation bridge: runs in the page's own (MAIN) world so it can patch
@@ -36,6 +40,17 @@ export default defineManifest({
       // patch is in place before the app performs its first navigation.
       matches: ['https://claude.ai/*'],
       js: ['src/content/navigation-bridge.ts'],
+      world: 'MAIN',
+      run_at: 'document_start',
+    },
+    {
+      // Network bridge: runs in the page's own (MAIN) world so it can wrap the
+      // host SPA's fetch/XMLHttpRequest — invisible to the isolated world — and
+      // relay request/response metadata to the marhiv-dev recorder. Passive
+      // until recording is turned on; injected at document_start so no early
+      // request is missed.
+      matches: ['https://claude.ai/*'],
+      js: ['src/content/network-bridge.ts'],
       world: 'MAIN',
       run_at: 'document_start',
     },

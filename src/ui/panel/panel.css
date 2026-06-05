@@ -314,6 +314,19 @@
   font-size: 11px;
 }
 
+/* Explanatory help text (e.g. the Dev page's full-page tool descriptions). */
+.marhiv-help {
+  margin: -4px 0 0;
+  max-width: 64ch;
+  color: var(--marhiv-text-muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.marhiv-help code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
 .marhiv-field {
   display: flex;
   align-items: center;
@@ -322,6 +335,15 @@
 }
 
 .marhiv-field__label {
+  min-width: 0;
+}
+
+/* A label stacked above its value (instead of inline) for tight, mini-view
+   layouts — the value gets the full row width and truncates with an ellipsis. */
+.marhiv-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   min-width: 0;
 }
 
@@ -409,8 +431,38 @@
   position: sticky;
   top: 0;
   z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 12px 0 9px;
   background: var(--marhiv-canvas);
+}
+
+/* In the toolbar the search flexes to fill; the filter selects keep their size.
+   All children are 31px tall, so the bar height stays --marhiv-plugins-bar-h. */
+.marhiv-plugins__bar .marhiv-search {
+  flex: 1 1 0;
+  width: auto;
+  min-width: 0;
+}
+
+/* Filter dropdowns in the Plugins toolbar (and reusable elsewhere). */
+.marhiv-select {
+  flex: 0 0 auto;
+  height: 31px;
+  box-sizing: border-box;
+  font: inherit;
+  color: var(--marhiv-snow);
+  background: var(--marhiv-surface);
+  border: 1px solid var(--marhiv-hairline);
+  border-radius: 6px;
+  padding: 0 6px;
+  cursor: pointer;
+}
+
+.marhiv-select:focus-visible {
+  outline: 2px solid var(--marhiv-accent);
+  outline-offset: 1px;
 }
 
 /* Plugins table — a row per plugin with a name/description cell and a toggle. */
