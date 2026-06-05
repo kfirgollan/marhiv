@@ -11,6 +11,7 @@
 
 import { useRouteStore } from '../store/route'
 import { observeNavigation } from './navigation'
+import { log } from '../log'
 import type { Route, Site } from './types'
 
 interface ActiveRoute {
@@ -25,7 +26,7 @@ function runEnter(label: string, enter: () => void | Promise<void>): void {
     try {
       await enter()
     } catch (error) {
-      console.error(`[marhiv] ${label} failed to enter`, error)
+      log.error(`${label} failed to enter`, error)
     }
   })()
 }
@@ -33,17 +34,37 @@ function runEnter(label: string, enter: () => void | Promise<void>): void {
 export class Router {
   private readonly site: Site
   private readonly active = new Map<string, ActiveRoute>()
-  // Scopes site-level chrome. It lives for the whole document and is never
-  // aborted today; a future `stop()` would abort it to tear that chrome down.
+  // Scopes site-level chrome (the Menu Ball). `stop()` aborts it to tear that
+  // chrome down — e.g. when the extension context is invalidated.
   private readonly siteController = new AbortController()
+  // The live navigation subscription, held so `stop()` can detach it.
+  private navUnsubscribe: (() => void) | null = null
 
   constructor(site: Site) {
     this.site = site
   }
 
+  // Mount site chrome, then reconcile against the current URL and on every
+  // navigation. Call once after construction.
+  start(): void {
+    this.enterSite()
+    this.navUnsubscribe = observeNavigation((url) => this.reconcile(url))
+    this.reconcile(new URL(location.href))
+  }
+
+  // Fully tear the router down: stop observing navigation, leave every active
+  // route (aborting its signal), and abort the site scope so site-level chrome
+  // removes itself. Idempotent.
+  stop(): void {
+    this.navUnsubscribe?.()
+    this.navUnsubscribe = null
+    for (const id of [...this.active.keys()]) this.leave(id)
+    this.siteController.abort()
+  }
+
   // Mount site-level chrome — the parts that persist across every page, like
-  // the Menu Ball. Call once when the host loads, before the first reconcile.
-  enterSite(): void {
+  // the Menu Ball. Runs once from `start()`, before the first reconcile.
+  private enterSite(): void {
     const { enter } = this.site
     if (!enter) return
     runEnter(`site "${this.site.id}"`, () => enter({ signal: this.siteController.signal }))
@@ -99,8 +120,6 @@ function sameParams(
 // Returns the Router so callers can hold or inspect it.
 export function startRouter(site: Site): Router {
   const router = new Router(site)
-  router.enterSite()
-  observeNavigation((url) => router.reconcile(url))
-  router.reconcile(new URL(location.href))
+  router.start()
   return router
 }

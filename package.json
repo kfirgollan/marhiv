@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:release": "vite build --mode release",
     "preview": "vite preview",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

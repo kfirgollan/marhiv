@@ -13,6 +13,7 @@ import { observeNavigation } from '../routing/navigation'
 import type { SiteEnhancements } from '../enhance/slots'
 import { BUILTIN_PLUGINS } from './registry'
 import { createPluginContext, type ManagedContext } from './context'
+import { log } from '../log'
 import type { Plugin } from './types'
 
 // Whether a plugin is enabled given the stored states, falling back to its
@@ -37,6 +38,8 @@ export class PluginManager {
   private active = new Map<string, ManagedContext>()
   private states: PluginStates = {}
   private url = location.href
+  // Storage + navigation subscriptions, held so `dispose()` can detach them.
+  private subscriptions: Array<() => void> = []
 
   // `enhancements` is the host site's slot/route data, lent to each plugin's
   // context so `ctx.onRoute`/`slot(...)` resolve against this site.
@@ -48,14 +51,28 @@ export class PluginManager {
   async init(): Promise<void> {
     this.states = (await loadPluginStates()) ?? {}
     this.reconcile()
-    onPluginStatesChange((next) => {
-      this.states = next
-      this.reconcile()
-    })
-    observeNavigation((url) => {
-      this.url = url.href
-      this.reconcile()
-    })
+    this.subscriptions.push(
+      onPluginStatesChange((next) => {
+        this.states = next
+        this.reconcile()
+      }),
+      observeNavigation((url) => {
+        this.url = url.href
+        this.reconcile()
+      }),
+    )
+  }
+
+  // Tear the manager down: stop reacting to storage and navigation, then unload
+  // every active plugin so its context effects (injected CSS, host-DOM items,
+  // registered pages) are undone. Used when the extension context is
+  // invalidated, so a zombie tab doesn't keep mutating the host page.
+  dispose(): void {
+    for (const unsubscribe of this.subscriptions) unsubscribe()
+    this.subscriptions = []
+    for (const plugin of BUILTIN_PLUGINS) {
+      if (this.active.has(plugin.meta.id)) void this.unload(plugin)
+    }
   }
 
   // Bring the set of active plugins in line with the desired state: load those
@@ -76,7 +93,7 @@ export class PluginManager {
     try {
       await plugin.onLoad(managed.ctx)
     } catch (error) {
-      console.error(`[marhiv] plugin "${plugin.meta.id}" failed to load`, error)
+      log.error(`plugin "${plugin.meta.id}" failed to load`, error)
       this.active.delete(plugin.meta.id)
       managed.dispose()
     }
@@ -89,7 +106,7 @@ export class PluginManager {
     try {
       await plugin.onUnload?.(managed.ctx)
     } catch (error) {
-      console.error(`[marhiv] plugin "${plugin.meta.id}" failed to unload`, error)
+      log.error(`plugin "${plugin.meta.id}" failed to unload`, error)
     } finally {
       // Undo whatever the plugin did through its context regardless.
       managed.dispose()

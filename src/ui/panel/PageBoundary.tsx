@@ -5,6 +5,7 @@
 // importantly — log it with a `[marhiv]` prefix so it survives a console filter.
 
 import { Component, type ErrorInfo, type ReactNode } from 'react'
+import { log } from '../../log'
 
 interface Props {
   // Remounts the boundary (clearing a caught error) when the active page changes.
@@ -47,7 +48,7 @@ export class PageBoundary extends Component<Props, State> {
 
   componentDidCatch(error: Error, info: ErrorInfo): void {
     const where = this.props.standalone ? 'panel' : 'panel page'
-    console.error(`[marhiv] ${where} crashed:`, error, info.componentStack)
+    log.error(`${where} crashed:`, error, info.componentStack)
   }
 
   render(): ReactNode {
