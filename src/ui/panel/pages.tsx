@@ -9,6 +9,7 @@
 import type { ReactNode } from 'react'
 import { PanelPage } from './PanelPage'
 import { PluginsPage } from './PluginsPage'
+import { MARHIV_SITE_URL } from '../../links'
 
 export interface PanelPageDef {
   id: string
@@ -24,6 +25,11 @@ function AboutPage(): ReactNode {
   return (
     <PanelPage title="About">
       <p className="marhiv-page__lead">Make the AI chatbots you use your own.</p>
+      <p>
+        <a className="marhiv-link" href={MARHIV_SITE_URL} target="_blank" rel="noopener noreferrer">
+          marhiv.app
+        </a>
+      </p>
       <p className="marhiv-page__meta">Marhiv · pre-alpha · v0.0.1</p>
     </PanelPage>
   )

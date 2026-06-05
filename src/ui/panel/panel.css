@@ -80,6 +80,24 @@
   padding: 4px 0 8px;
 }
 
+/* The logo links to the Marhiv site; reset anchor chrome and give it a hover. */
+.marhiv-brand__home {
+  display: inline-flex;
+  flex: 0 0 auto;
+  border-radius: 6px;
+  cursor: pointer;
+  outline: none;
+  transition: opacity 120ms ease;
+}
+
+.marhiv-brand__home:hover {
+  opacity: 0.8;
+}
+
+.marhiv-brand__home:focus-visible {
+  box-shadow: 0 0 0 2px var(--marhiv-accent);
+}
+
 .marhiv-brand__logo {
   flex: 0 0 auto;
   width: 22px;
@@ -96,6 +114,16 @@
   color: var(--marhiv-snow);
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+/* Inline text link (e.g. the website on the About page). */
+.marhiv-link {
+  color: var(--marhiv-accent);
+  text-decoration: none;
+}
+
+.marhiv-link:hover {
+  text-decoration: underline;
 }
 
 /* Collapse/expand toggle — sits above the menu items. */

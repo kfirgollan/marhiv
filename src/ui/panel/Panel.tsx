@@ -27,6 +27,7 @@ import { usePanelPages } from '../../store/panelPages'
 import { PanelMenuItem } from './PanelMenuItem'
 import { PageBoundary } from './PageBoundary'
 import { MARHIV_LOGO_URL } from '../logo'
+import { MARHIV_SITE_URL } from '../../links'
 
 const GRIP_CURSOR: Record<Corner, string> = {
   tl: 'nwse-resize',
@@ -174,14 +175,24 @@ export function Panel({ onClose }: { onClose: () => void }) {
         style={panelStyle}
       >
         <nav className={'marhiv-panel__nav' + (collapsed ? ' marhiv-panel__nav--collapsed' : '')}>
-          {/* Persistent brand mark at the head of the rail. */}
+          {/* Persistent brand mark at the head of the rail; the logo opens the
+              Marhiv site in a new tab. */}
           <div className="marhiv-brand">
-            <img
-              className="marhiv-brand__logo"
-              src={MARHIV_LOGO_URL}
-              alt="Marhiv"
-              draggable={false}
-            />
+            <a
+              className="marhiv-brand__home"
+              href={MARHIV_SITE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Open marhiv.app"
+              aria-label="Open marhiv.app in a new tab"
+            >
+              <img
+                className="marhiv-brand__logo"
+                src={MARHIV_LOGO_URL}
+                alt="Marhiv"
+                draggable={false}
+              />
+            </a>
             {!collapsed && <span className="marhiv-brand__name">Marhiv</span>}
           </div>
           <button
