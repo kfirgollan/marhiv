@@ -102,7 +102,11 @@ export async function mountIndicator(signal?: AbortSignal): Promise<void> {
   container.append(handle, logo)
   document.body.appendChild(container)
 
-  applyPosition(container, clampToViewport((await loadPosition()) ?? defaultPosition()))
+  // The intended position (last loaded / dragged / synced from another tab).
+  // It's clamped to the viewport for display, but the intended value is kept so
+  // the ball drifts back toward its spot when the viewport grows again.
+  let position: Position = (await loadPosition()) ?? defaultPosition()
+  applyPosition(container, clampToViewport(position))
   // The route may have left while the position was loading; if so, undo the
   // mount rather than leaving an orphaned indicator behind.
   if (signal?.aborted) {
@@ -141,6 +145,18 @@ export async function mountIndicator(signal?: AbortSignal): Promise<void> {
     { signal },
   )
 
+  // Keep the ball on-screen when the viewport shrinks — a window resize, the
+  // devtools panel docking, a zoom change. Without this, a position from a wider
+  // window leaves the ball off-screen. Re-clamp the intended position so it stays
+  // visible (and returns toward its spot when the viewport grows back).
+  window.addEventListener(
+    'resize',
+    () => {
+      if (!dragging) applyPosition(container, clampToViewport(position))
+    },
+    { signal },
+  )
+
   handle.addEventListener('pointerdown', (event: PointerEvent) => {
     event.preventDefault()
     dragging = true
@@ -169,7 +185,8 @@ export async function mountIndicator(signal?: AbortSignal): Promise<void> {
       handle.removeEventListener('pointerup', onUp)
 
       const finalRect = container.getBoundingClientRect()
-      void savePosition({ left: finalRect.left, top: finalRect.top })
+      position = { left: finalRect.left, top: finalRect.top }
+      void savePosition(position)
       if (!container.matches(':hover')) hideHandle()
     }
 
@@ -180,7 +197,9 @@ export async function mountIndicator(signal?: AbortSignal): Promise<void> {
   // Keep this page's indicator in sync when another tab moves it. Ignore
   // updates mid-drag so we don't fight the user's pointer.
   const unsubscribe = onPositionChange((next) => {
-    if (!dragging) applyPosition(container, clampToViewport(next))
+    if (dragging) return
+    position = next
+    applyPosition(container, clampToViewport(next))
   })
 
   // When the route leaves (the user navigates away from this page), tear the
