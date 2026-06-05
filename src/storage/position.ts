@@ -7,6 +7,20 @@ export interface Position {
   top: number
 }
 
+const BALL_SIZE = 32
+const MARGIN = 16
+
+// The Menu Ball's resting spot when nothing is stored yet (bottom-right corner).
+// Shared by the indicator (to place the ball) and the Panel (to anchor to it), so
+// a fresh install — or a reinstall that cleared storage — still positions both
+// consistently instead of leaving the Panel with no anchor (and thus invisible).
+export function defaultPosition(): Position {
+  return {
+    left: window.innerWidth - BALL_SIZE - MARGIN,
+    top: window.innerHeight - BALL_SIZE - MARGIN,
+  }
+}
+
 function isPosition(value: unknown): value is Position {
   return (
     typeof value === 'object' &&

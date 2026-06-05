@@ -4,6 +4,7 @@
 
 import { createRoot } from 'react-dom/client'
 import { Panel } from './Panel'
+import { PageBoundary } from './PageBoundary'
 // `?inline` hands us the stylesheet as a string so we can inject it INTO the
 // shadow root, instead of Vite's default of appending it to the host page's
 // <head> (which would leak styles and miss the shadow tree entirely).
@@ -34,7 +35,13 @@ export function mountPanel(
   let open = false
 
   const render = (): void => {
-    root.render(open ? <Panel onClose={() => handle.close()} /> : null)
+    root.render(
+      open ? (
+        <PageBoundary standalone>
+          <Panel onClose={() => handle.close()} />
+        </PageBoundary>
+      ) : null,
+    )
   }
 
   const handle: PanelHandle = {

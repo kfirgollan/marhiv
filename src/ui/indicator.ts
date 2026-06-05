@@ -6,20 +6,18 @@
 // `chrome.storage`. All styles are inline so the widget is self-contained and
 // independent of the host page's stylesheets.
 
-import { loadPosition, savePosition, onPositionChange, type Position } from '../storage/position'
+import {
+  loadPosition,
+  savePosition,
+  onPositionChange,
+  defaultPosition,
+  type Position,
+} from '../storage/position'
 import { mountPanel } from './panel/mount'
 import { MARHIV_LOGO_URL } from './logo'
 
 const CONTAINER_ID = 'marhiv-indicator'
 const SIZE = 32
-const MARGIN = 16
-
-function defaultPosition(): Position {
-  return {
-    left: window.innerWidth - SIZE - MARGIN,
-    top: window.innerHeight - SIZE - MARGIN,
-  }
-}
 
 // Keep the circle fully inside the viewport — guards against a stored position
 // from a larger window leaving it off-screen on a smaller one.

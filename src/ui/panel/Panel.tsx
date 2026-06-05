@@ -14,12 +14,18 @@ import {
   type ReactNode,
   type PointerEvent as ReactPointerEvent,
 } from 'react'
-import { loadPosition, onPositionChange, type Position } from '../../storage/position'
+import {
+  defaultPosition,
+  loadPosition,
+  onPositionChange,
+  type Position,
+} from '../../storage/position'
 import { usePanelSize, usePanelPage, usePanelCollapsed, usePanelMaximized } from '../../store/panel'
 import { clamp, computeGeometry, MIN_HEIGHT, MIN_WIDTH, type Corner } from './geometry'
 import { BUILTIN_PAGES, type PanelPageDef } from './pages'
 import { usePanelPages } from '../../store/panelPages'
 import { PanelMenuItem } from './PanelMenuItem'
+import { PageBoundary } from './PageBoundary'
 import { MARHIV_LOGO_URL } from '../logo'
 
 const GRIP_CURSOR: Record<Corner, string> = {
@@ -58,7 +64,10 @@ export function Panel({ onClose }: { onClose: () => void }) {
   // storage layer; mirror it here and keep it current across tabs so the Panel
   // stays anchored to it.
   useEffect(() => {
-    void loadPosition().then((p) => p && setBall(p))
+    // Fall back to the default spot when nothing is stored (e.g. a reinstall that
+    // cleared storage) — otherwise `ball` stays null, geometry can't compute, and
+    // the Panel renders nothing at all.
+    void loadPosition().then((p) => setBall(p ?? defaultPosition()))
     return onPositionChange(setBall)
   }, [])
 
@@ -213,7 +222,9 @@ export function Panel({ onClose }: { onClose: () => void }) {
               ×
             </button>
           </div>
-          <ActivePage />
+          <PageBoundary pageId={active.id}>
+            <ActivePage />
+          </PageBoundary>
         </section>
 
         {/* No resize handle while maximized — the modal is sized to the viewport. */}
