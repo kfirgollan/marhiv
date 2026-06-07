@@ -17,6 +17,7 @@ import { rosePine } from './builtin/rose-pine'
 import { everforest } from './builtin/everforest'
 import { marhivDev } from './builtin/marhiv-dev'
 import { claudeCodeEnhancer } from './builtin/claude-code-enhancer'
+import { customScripts } from './builtin/custom-scripts'
 
 // Themes first (marhiv-theme is the flagship), then non-theme plugins.
 export const BUILTIN_PLUGINS: Plugin[] = [
@@ -33,4 +34,5 @@ export const BUILTIN_PLUGINS: Plugin[] = [
   everforest,
   marhivDev,
   claudeCodeEnhancer,
+  customScripts,
 ]

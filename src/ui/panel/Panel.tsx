@@ -173,6 +173,15 @@ export function Panel({ onClose }: { onClose: () => void }) {
         ref={containerRef}
         className={'marhiv-panel' + (maximized ? ' marhiv-panel--maximized' : '')}
         style={panelStyle}
+        // Keep keystrokes inside the Panel. Host AI sites (e.g. claude.ai) listen on
+        // document for shortcuts like "type to focus the composer"; without this,
+        // typing in a Panel field (the Scripts name, the editor) bubbles out and the
+        // host steals focus mid-edit. We still honor Escape to close.
+        onKeyDown={(e) => {
+          e.stopPropagation()
+          if (e.key === 'Escape') onClose()
+        }}
+        onKeyUp={(e) => e.stopPropagation()}
       >
         <nav className={'marhiv-panel__nav' + (collapsed ? ' marhiv-panel__nav--collapsed' : '')}>
           {/* Persistent brand mark at the head of the rail; the logo opens the

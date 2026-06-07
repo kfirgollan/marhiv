@@ -45,7 +45,9 @@ export function createPluginContext(
       route: useRouteStore,
       panelMaximized: usePanelMaximized,
     },
-    onRoute(route, handler) {
+    onRoute(route, handler, options) {
+      // Already-aborted caller signal: never subscribe.
+      if (options?.signal?.aborted) return
       // A mini-router for one route name, driven by the active routes the
       // content script publishes to the route store. `evaluate` is idempotent:
       // it only acts on the active↔inactive transition, so subscribing to every
@@ -69,10 +71,14 @@ export function createPluginContext(
       }
       evaluate(useRouteStore.getState().routes)
       const unsubscribe = useRouteStore.subscribe((state) => evaluate(state.routes))
-      cleanups.push(() => {
+      const teardown = (): void => {
         scope?.abort()
+        scope = null
         unsubscribe()
-      })
+      }
+      cleanups.push(teardown)
+      // End early when the caller's signal aborts (e.g. one user script disabled).
+      options?.signal?.addEventListener('abort', teardown, { once: true })
     },
   }
 

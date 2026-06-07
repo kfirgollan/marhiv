@@ -26,12 +26,22 @@ export default defineManifest({
     },
   },
   // `storage` lets the indicator persist its position across page loads and
-  // share it between every page Marhiv runs on.
-  permissions: ['storage'],
+  // share it between every page Marhiv runs on. `userScripts` lets the background
+  // worker run user-authored scripts (the custom-scripts plugin) — the only
+  // MV3-sanctioned way to execute user code; from Chrome 138 it also requires the
+  // user to flip a per-extension "Allow user scripts" toggle.
+  permissions: ['storage', 'userScripts'],
   // Lets plugins make first-party (cookie-authenticated) requests to Claude's API
   // from the content script — e.g. the Environments shortcut listing the org's
   // environments. Without it, those same-origin fetches can go out unauthenticated.
   host_permissions: ['https://claude.ai/*'],
+  // The project's first background worker: it keeps chrome.userScripts
+  // registrations in sync with the user's saved scripts (the userScripts API
+  // isn't reachable from a content script). See src/background.
+  background: {
+    service_worker: 'src/background/index.ts',
+    type: 'module',
+  },
   content_scripts: [
     {
       // Navigation bridge: runs in the page's own (MAIN) world so it can patch

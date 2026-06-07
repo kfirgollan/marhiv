@@ -77,7 +77,16 @@ export interface PluginContext {
   // subscription is tracked, so it stops when the plugin unloads. This is how a
   // plugin scopes on-page behavior to part of a site (e.g. only claude.ai/code)
   // while still loading site-wide for its always-on UI.
-  onRoute(route: string, handler: (scope: RouteScope) => void): void
+  //
+  // Pass `options.signal` to end the subscription early (and abort its current
+  // scope) before unload — for a plugin managing many independently-disposable
+  // route handlers (e.g. one per user script), so disabling one tears down just
+  // its handler.
+  onRoute(
+    route: string,
+    handler: (scope: RouteScope) => void,
+    options?: { signal?: AbortSignal },
+  ): void
 }
 
 export interface Plugin {
