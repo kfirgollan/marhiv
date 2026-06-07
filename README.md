@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/brand/marhiv-mark-512.png" alt="Marhiv logo — a colorful alpine peak at alpenglow, framed in a circle" width="128" height="128" />
+  <img src="assets/brand/marhiv-social.png" alt="Marhiv — makes the AI chatbots you use your own" width="100%" />
 </p>
 
 # Marhiv
