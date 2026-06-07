@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/brand/marhiv-mark-512.png" alt="Marhiv logo — a colorful alpine peak at alpenglow, framed in a circle" width="128" height="128" />
+</p>
+
 # Marhiv
 
 [![CI](https://github.com/kfirgollan/marhiv/actions/workflows/ci.yml/badge.svg)](https://github.com/kfirgollan/marhiv/actions/workflows/ci.yml)
@@ -18,6 +22,19 @@ AI chat interfaces are powerful but one-size-fits-all. Marhiv is the customizati
 - **Curated, not chaotic** — a collection of vetted plugins that ship with the extension (delivered through the Chrome Web Store) and toggle on in a click (the _Oh My Zsh_ part).
 - **Escape hatch for power users** — write or paste your own site-matched scripts when no plugin exists (the _Tampermonkey_ part).
 - **Cross-tool** — one place to manage enhancements across every AI chatbot, instead of one bookmarklet per site.
+
+## Screenshots
+
+The settings Panel running on `claude.ai/code`, opened from the draggable Menu Ball. _(These are the images used on the Chrome Web Store listing.)_
+
+|                                                                                                                                       |                                                                                                                                                   |
+| ------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![The Marhiv Plugins page with the Marhiv Theme enabled, recoloring Claude in the alpenglow palette](assets/store/marhiv-store-1.png) | ![A different theme applied to the page, with the Plugins list showing Catppuccin, Gruvbox, Solarized, and more](assets/store/marhiv-store-2.png) |
+| **Toggle a plugin** — the Plugins page, with the first-party Marhiv Theme on.                                                         | **Pick a look** — switch the whole host site to any bundled theme.                                                                                |
+
+![The expanded Plugins page listing the full registry by category — themes, developer tools, and enhancements](assets/store/marhiv-store-3.png)
+
+**Browse the registry** — every bundled plugin in one place, grouped by category (themes, developer tools, enhancements).
 
 ## How it works (planned)
 
