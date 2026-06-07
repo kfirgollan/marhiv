@@ -63,9 +63,11 @@ _See also: [Settings Panel](#settings-panel), [Menu Ball](#menu-ball), [Enhancem
 
 ### Plugin
 
-A curated, first-party enhancement that lives in this repo and is published to
-the **Registry**. Each Plugin declares the AI sites it targets and the behavior
-it adds. The "Oh My Zsh" half of the model: vetted, installable, configurable.
+A curated, first-party enhancement that lives in this repo and ships **bundled
+in the extension**, distributed through the Chrome Web Store as part of the
+**Registry** collection. Each Plugin declares the AI sites it targets and the
+behavior it adds. The "Oh My Zsh" half of the model: vetted, installable,
+configurable.
 
 A Plugin is `{ meta, onLoad, onUnload? }`: `meta` declares its id, name, target
 `matches`, and default enabled state; `onLoad`/`onUnload` are the lifecycle hooks
@@ -106,7 +108,15 @@ _See also: [Plugin](#plugin), [Plugin Context](#plugin-context), [Enhancement AP
 
 ### Registry
 
-The format and tooling for publishing and installing community **Plugins**.
+The curated, in-repo collection of first-party **Plugins** (plus any discovery
+or catalog tooling around it), distributed to users **bundled in the extension
+via the Chrome Web Store**.
+
+Plugins are not installed at runtime from a remote source: Manifest V3 forbids
+remotely hosted code, so every plugin's logic must ship inside the reviewed
+package. Community plugins therefore reach users by being merged into the repo
+and released through the store, not fetched live. Today the collection is the
+`BUILTIN_PLUGINS` array in `src/plugins/registry.ts`.
 
 _See also: [Plugin](#plugin)._
 
@@ -175,4 +185,9 @@ A sandboxed, user-authored, site-matched script for cases curated **Plugins**
 don't cover. The "Tampermonkey" half of the model: an escape hatch for power
 users, treated as untrusted and run through the **Enhancement API**.
 
-_See also: [Plugin](#plugin), [Enhancement API](#enhancement-api)._
+Because user-authored code can't ship inside the reviewed extension package,
+Userscripts are the one place external logic executes — which on Manifest V3
+means going through the sanctioned `chrome.userScripts` API (never `eval` or a
+remote `<script>`), gated by its own permission and a per-extension user opt-in.
+
+_See also: [Plugin](#plugin), [Enhancement API](#enhancement-api), [Registry](#registry)._

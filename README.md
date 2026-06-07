@@ -2,7 +2,7 @@
 
 **Marhiv** (Hebrew: מרהיב, _"spectacular"_) is a Chromium browser extension that makes the AI chatbots you already use _your own_.
 
-Think **Tampermonkey × Oh My Zsh**, purpose-built for AI tools: a framework for layering enhancements — UI tweaks, prompt helpers, keyboard shortcuts, themes, and automations — onto sites like ChatGPT, Claude, Gemini, and more. Install curated plugins from a community registry, or write your own userscript-style enhancements when you want full control.
+Think **Tampermonkey × Oh My Zsh**, purpose-built for AI tools: a framework for layering enhancements — UI tweaks, prompt helpers, keyboard shortcuts, themes, and automations — onto sites like ChatGPT, Claude, Gemini, and more. Toggle on curated plugins that ship with the extension, or write your own userscript-style enhancements when you want full control.
 
 > ⚠️ **Status: pre-alpha.** Marhiv is at its very first commit. The vision below is the destination; the code is just getting started. Expect things to change.
 
@@ -11,7 +11,7 @@ Think **Tampermonkey × Oh My Zsh**, purpose-built for AI tools: a framework for
 AI chat interfaces are powerful but one-size-fits-all. Marhiv is the customization layer on top:
 
 - **Make it yours** — themes, layout tweaks, and quality-of-life fixes for the AI sites you live in.
-- **Curated, not chaotic** — a community registry of vetted plugins you can browse and install in a click (the _Oh My Zsh_ part).
+- **Curated, not chaotic** — a collection of vetted plugins that ship with the extension (delivered through the Chrome Web Store) and toggle on in a click (the _Oh My Zsh_ part).
 - **Escape hatch for power users** — write or paste your own site-matched scripts when no plugin exists (the _Tampermonkey_ part).
 - **Cross-tool** — one place to manage enhancements across every AI chatbot, instead of one bookmarklet per site.
 
@@ -19,7 +19,7 @@ AI chat interfaces are powerful but one-size-fits-all. Marhiv is the customizati
 
 Marhiv has two ways to enhance a page:
 
-1. **Plugins** — first-party, curated enhancements that ship in the repo and are published to a registry. Each declares which AI sites it targets and what it does. Browse, toggle, and configure them from the extension UI.
+1. **Plugins** — first-party, curated enhancements that live in the repo and ship **bundled into the extension**, delivered and updated through the **Chrome Web Store** (Manifest V3 doesn't allow loading code from a remote registry at runtime). Each declares which AI sites it targets and what it does. Browse, toggle, and configure them from the extension UI.
 2. **Userscripts** — sandboxed, site-matched scripts you author yourself, for the cases the curated plugins don't cover.
 
 Both run through the same content-script host on supported AI sites, with a shared API for interacting with the chat UI.
@@ -79,7 +79,7 @@ npm run check:dup    # fails if any copy-paste clones are found
 
 ## Contributing
 
-Marhiv is meant to be community-driven — the plugin registry only matters if people build for it. Contribution guidelines, a plugin authoring guide, and the registry format are on the roadmap. In the meantime, issues and ideas are welcome.
+Marhiv is meant to be community-driven — the plugin collection only matters if people build for it. Because Manifest V3 requires all code to ship inside the reviewed extension, community plugins are contributed to this repo and reach users in a Chrome Web Store release (rather than installed at runtime from a remote registry). Contribution guidelines and a plugin authoring guide are on the roadmap. In the meantime, issues and ideas are welcome.
 
 ## License
 
