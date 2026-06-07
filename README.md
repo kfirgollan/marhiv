@@ -47,6 +47,21 @@ Both run through the same content-script host on supported AI sites, with a shar
 
 Marhiv currently runs on **Claude** (`claude.ai`). ChatGPT and Gemini are next — the plugin model is designed so adding a new site is a small, well-defined change.
 
+## Install
+
+> ⏳ **Coming to the Chrome Web Store** — the listing is in review. Until it's approved, install Marhiv manually by loading it as an unpacked extension, the way developers do. It takes about a minute and works in any Chromium browser (Chrome, Edge, Brave, …).
+
+In short: **build it**, then load the output folder.
+
+```bash
+npm install
+npm run build      # produces dist/
+```
+
+Then open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked**, and select the `dist/` folder. Open `claude.ai` and the Menu Ball appears in the corner.
+
+👉 **Full step-by-step guide** — prerequisites, per-browser instructions, updating, uninstalling, and troubleshooting: **[INSTALL.md](INSTALL.md)**.
+
 ## Getting started
 
 Marhiv is built with **TypeScript + Vite (CRXJS)**, targeting **Manifest V3**.
@@ -59,11 +74,7 @@ npm run build    # production build → dist/
 
 ### Load it in your browser
 
-After `npm run build` (or `npm run dev`), load the unpacked extension:
-
-**Chrome:** open `chrome://extensions`, enable **Developer mode**, click **Load unpacked**, and select the `dist/` directory.
-
-**Edge:** open `edge://extensions`, enable **Developer mode** (toggle on the left), click **Load unpacked**, and select the `dist/` directory.
+After `npm run build` (or `npm run dev`), load the built `dist/` folder as an unpacked extension — see **[INSTALL.md](INSTALL.md)** for the full, per-browser walkthrough.
 
 ### What it does
 
