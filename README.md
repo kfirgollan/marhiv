@@ -1,5 +1,9 @@
 # Marhiv
 
+[![CI](https://github.com/kfirgollan/marhiv/actions/workflows/ci.yml/badge.svg)](https://github.com/kfirgollan/marhiv/actions/workflows/ci.yml)
+[![License: Apache 2.0](https://img.shields.io/github/license/kfirgollan/marhiv)](LICENSE)
+[![Version](https://img.shields.io/github/package-json/v/kfirgollan/marhiv)](package.json)
+
 **Marhiv** (Hebrew: מרהיב, _"spectacular"_) is a Chromium browser extension that makes the AI chatbots you already use _your own_.
 
 Think **Tampermonkey × Oh My Zsh**, purpose-built for AI tools: a framework for layering enhancements — UI tweaks, prompt helpers, keyboard shortcuts, themes, and automations — onto sites like ChatGPT, Claude, Gemini, and more. Toggle on curated plugins that ship with the extension, or write your own userscript-style enhancements when you want full control.
