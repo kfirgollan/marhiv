@@ -34,7 +34,7 @@ The settings Panel running on `claude.ai/code`, opened from the draggable Menu B
 
 **Browse the registry** — every bundled plugin in one place, grouped by category (themes, developer tools, enhancements).
 
-## How it works (planned)
+## How it works
 
 Marhiv has two ways to enhance a page:
 
@@ -45,13 +45,7 @@ Both run through the same content-script host on supported AI sites, with a shar
 
 ## Supported AI tools
 
-The initial target set (subject to change as we build):
-
-- ChatGPT
-- Claude
-- Gemini
-
-…with the plugin model designed so adding new sites is straightforward.
+Marhiv currently runs on **Claude** (`claude.ai`). ChatGPT and Gemini are next — the plugin model is designed so adding a new site is a small, well-defined change.
 
 ## Getting started
 
@@ -71,9 +65,9 @@ After `npm run build` (or `npm run dev`), load the unpacked extension:
 
 **Edge:** open `edge://extensions`, enable **Developer mode** (toggle on the left), click **Load unpacked**, and select the `dist/` directory.
 
-### What v0.0.1 does
+### What it does
 
-A single content script targets `https://claude.ai/new`. When that page loads, Marhiv mounts a draggable **Menu Ball** (the logo disc) in the corner — drag it by the handle that appears on hover; its position is remembered across pages. Click it to open the **settings Panel**, a small resizable window that anchors over the ball and opens into whichever corner of the screen has room. The Panel has a left menu (General, About) and a content area; the controls are placeholders for now — the configuration system they'll drive comes later.
+On `claude.ai`, Marhiv mounts a draggable **Menu Ball** (the logo disc) in the corner — drag it by the handle that appears on hover; its position is remembered across pages. Click it to open the **settings Panel**, a resizable window that anchors over the ball and opens into whichever corner of the screen has room. From the **Plugins** page you toggle the bundled enhancements — themes that recolor the site, developer tools, and the **Custom Scripts** editor for your own userscripts — applied live.
 
 ### Linting & formatting
 
