@@ -30,7 +30,7 @@ function AboutPage(): ReactNode {
           marhiv.app
         </a>
       </p>
-      <p className="marhiv-page__meta">Marhiv · pre-alpha · v0.0.1</p>
+      <p className="marhiv-page__meta">Marhiv · v0.0.1</p>
     </PanelPage>
   )
 }

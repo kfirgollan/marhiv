@@ -12,8 +12,6 @@
 
 Think **Tampermonkey × Oh My Zsh**, purpose-built for AI tools: a framework for layering enhancements — UI tweaks, prompt helpers, keyboard shortcuts, themes, and automations — onto sites like ChatGPT, Claude, Gemini, and more. Toggle on curated plugins that ship with the extension, or write your own userscript-style enhancements when you want full control.
 
-> ⚠️ **Status: pre-alpha.** Marhiv is at its very first commit. The vision below is the destination; the code is just getting started. Expect things to change.
-
 ## Why Marhiv
 
 AI chat interfaces are powerful but one-size-fits-all. Marhiv is the customization layer on top:
